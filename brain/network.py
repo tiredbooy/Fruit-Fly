@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import json
 import math
 from pathlib import Path
+from typing import Protocol
 
 from brain.data import MaleCNSAnnotations, NeuronTransmitters
 from brain.neuron import rate_response
@@ -77,6 +78,19 @@ class RuntimeCircuit:
             },
             motor_roles={name: int(body_id) for name, body_id in document["motor_roles"].items()},
         )
+
+
+class NeuralNetwork(Protocol):
+    """Boundary shared by compact and full-connectome network engines."""
+
+    circuit: RuntimeCircuit
+
+    def step(
+        self,
+        external: dict[int, float],
+        *,
+        substeps: int = 5,
+    ) -> NeuralSnapshot: ...
 
 
 class ConnectomeNetwork:

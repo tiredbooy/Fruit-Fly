@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from brain.modulation import hunger_odor_gain
 from brain.learning import MushroomBodyLearning
-from brain.network import ConnectomeNetwork
+from brain.network import NeuralNetwork
 from brain.memory import MemoryState
 from simulation.signals import LearningSnapshot, NeuralSnapshot, RewardSignal, SensoryFrame
 
@@ -12,7 +12,7 @@ from simulation.signals import LearningSnapshot, NeuralSnapshot, RewardSignal, S
 class BrainAdapter:
     def __init__(
         self,
-        network: ConnectomeNetwork,
+        network: NeuralNetwork,
         learning: MushroomBodyLearning | None = None,
     ) -> None:
         self.network = network
