@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "frontend/web/index.html"
+        ],
+        "createdAt": "2026-09-13T08:53:16.616Z",
+        "reason": "False positive: Vite imports frontend/web/src/styles.css, where h1 is at least 1.35rem versus the 1rem body text."
+      }
+    ]
+  }
+}

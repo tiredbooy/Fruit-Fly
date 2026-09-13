@@ -4,4 +4,5 @@ __pycache__/
 data/processed/
 frontend/web/node_modules/
 frontend/web/dist/
-.impeccable/
+.impeccable/hook.cache.json
+.impeccable/review/
