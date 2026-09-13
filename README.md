@@ -1,5 +1,7 @@
 # FlyBrain Lab
 
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-4b8bbe.svg)](LICENSE)
+
 FlyBrain Lab is a from-scratch, inspectable neural-control simulation using the
 official MaleCNS v1.0 connectome. Experiment 1 contains one fly, a dynamic food
 source, hunger, bilateral smell, simple vision, persistent appetitive odor
@@ -10,6 +12,13 @@ rewards, separate food/gym odor memory, and a live anatomical neuron display.
 It is not a consciousness simulation. Neural activity shown in the terminal is
 numerical model telemetry, not a claim that the simulated fly has subjective
 experience.
+
+## Preview
+
+[![Watch the FlyBrain Lab gym simulation](docs/media/flybrain-lab-preview.jpg)](docs/media/flybrain-lab-preview.mp4)
+
+[Watch the 38-second preview video](docs/media/flybrain-lab-preview.mp4) (MP4,
+29.2 MB).
 
 ## Requirements
 
@@ -192,3 +201,13 @@ make test
 
 No neuron identifier, class, transmitter, or connection may be invented. Run
 `make data-status` after changing a circuit manifest.
+
+## License and attribution
+
+FlyBrain Lab's original source code, documentation, and project-produced media
+are Copyright 2026 tiredbooy and licensed under the
+[Apache License 2.0](LICENSE). Redistributed derivative works must preserve the
+license, changed-file notices, relevant attribution notices, and the project
+[`NOTICE`](NOTICE) as required by Apache-2.0. Third-party datasets and visual
+assets retain their separate terms; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

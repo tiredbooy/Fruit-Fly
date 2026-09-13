@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-13
 
+The public repository includes a 38-second H.264 preview and linked README
+thumbnail under `docs/media/`. Original project material is licensed under
+Apache-2.0 with a root `NOTICE` that identifies tiredbooy; MaleCNS and visual
+asset terms remain separately documented in `THIRD_PARTY_NOTICES.md` and their
+source manifests.
+
 ## Run the completed gym
 
 ```bash
