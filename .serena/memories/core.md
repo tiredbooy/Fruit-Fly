@@ -1,0 +1,16 @@
+# flybrain-lab
+- Experimental embodied fruit-fly simulator; Experiment 1 is one fly, one food source, hunger, smell, simple vision, locomotion, and appetitive memory.
+- Scientific invariant: neuron IDs, types/classes, transmitters, and structural edges must resolve from pinned MaleCNS assets. Never invent biological identities silently. Model equations/constants must be labeled assumptions.
+- Dependency invariant: brain and world do not import each other. simulation orchestrates the closed loop; adapters translate signals.
+- Terminal text, borders, and meters are English ASCII; the fly body is intentionally rendered with a fly emoji by explicit user request.
+- Runtime learned state belongs under data/runs/ and is ignored by git.
+- User approvals: once a scoped architecture/design is approved, execute it without repeated approval prompts.
+- Brain/connectome and plasticity details: `mem:brain/core`.
+- Physical world/body rules: `mem:world/core`.
+- Loop and signal ownership: `mem:simulation/core`.
+- Terminal rendering rules: `mem:frontend/core`.
+- Toolchain: `mem:tech_stack`.
+- Project-specific coding practices: `mem:conventions`.
+- Runnable targets: `mem:suggested_commands`.
+- Required completion gates: `mem:task_completion`.
+- Durable human docs: AGENTS.md, README.md, docs/architecture.md, docs/science/learning-memory.md, docs/status.md, docs/decisions/.
