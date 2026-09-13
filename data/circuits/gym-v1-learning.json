@@ -1,0 +1,611 @@
+{
+  "dataset": "male-cns:v1.0",
+  "evidence": {
+    "annotations": {
+      "sha256": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/body-annotations-male-cns-v1.0-minconf-0.5.feather"
+    },
+    "neurotransmitters": {
+      "sha256": "95c9289220663abeb3409f3ad9e5a7f8a53f8093f5139d15502cd08da8879621",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/body-neurotransmitters-male-cns-v1.0.feather"
+    },
+    "weights": {
+      "sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/connectome-weights-male-cns-v1.0-minconf-0.5.feather"
+    }
+  },
+  "gym_assumptions": [
+    "DM2 is a synthetic station cue, not a gym neuron identity.",
+    "KC learning modulates only its cue sensory gain; no assumed MBON fast-current sign.",
+    "Reward schedule and physiology are dimensionless model assumptions in docs/science/gym.md.",
+    "Descending motor drive powers a synthetic foreleg actuator; bench/curl joints, grip, range reflex and recovery are not measured neuron functions (docs/science/equipment.md)."
+  ],
+  "mbon01_neurons": {
+    "L": 520151,
+    "R": 10013
+  },
+  "model": "gym-dm2-pam01-kc-mbon01-v1",
+  "odor_type": "ORN_DM2",
+  "orn_pn_edges": [
+    {
+      "body_post": 11092,
+      "body_pre": 214557957,
+      "weight": 68
+    },
+    {
+      "body_post": 11092,
+      "body_pre": 463132,
+      "weight": 59
+    },
+    {
+      "body_post": 11092,
+      "body_pre": 201965,
+      "weight": 58
+    },
+    {
+      "body_post": 11092,
+      "body_pre": 383889,
+      "weight": 57
+    },
+    {
+      "body_post": 12171,
+      "body_pre": 161413,
+      "weight": 87
+    },
+    {
+      "body_post": 12171,
+      "body_pre": 519243,
+      "weight": 81
+    },
+    {
+      "body_post": 12171,
+      "body_pre": 80841,
+      "weight": 77
+    },
+    {
+      "body_post": 12171,
+      "body_pre": 172518,
+      "weight": 73
+    }
+  ],
+  "pam01_neurons": [
+    53285,
+    62731,
+    63391,
+    74856,
+    80744,
+    83277,
+    88477,
+    90867,
+    93704,
+    99089,
+    100258,
+    113067,
+    114216,
+    114700,
+    129563,
+    138629,
+    141615,
+    144315,
+    145094,
+    145148,
+    146603,
+    150177,
+    153931,
+    155916,
+    156028,
+    156046,
+    159062,
+    159158,
+    164086,
+    165365,
+    167009,
+    169278,
+    181924,
+    185518,
+    197691,
+    198758,
+    205884,
+    212085,
+    252045,
+    325731,
+    506819,
+    523638,
+    533294,
+    543677
+  ],
+  "plastic_edges": [
+    {
+      "body_post": 520151,
+      "body_pre": 90569,
+      "weight": 29
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 122703,
+      "weight": 30
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 552118,
+      "weight": 27
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 159261,
+      "weight": 26
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 111695,
+      "weight": 25
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 100615,
+      "weight": 23
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 111109,
+      "weight": 28
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 88132,
+      "weight": 26
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 139988,
+      "weight": 25
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 139093,
+      "weight": 22
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 89269,
+      "weight": 29
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 126779,
+      "weight": 25
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 66047,
+      "weight": 23
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 123841,
+      "weight": 21
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 141046,
+      "weight": 35
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 76564,
+      "weight": 21
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 152118,
+      "weight": 21
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 84932,
+      "weight": 20
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 126815,
+      "weight": 19
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 109512,
+      "weight": 19
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 51053,
+      "weight": 22
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 72854,
+      "weight": 32
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 79622,
+      "weight": 17
+    },
+    {
+      "body_post": 520151,
+      "body_pre": 138053,
+      "weight": 23
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 54746,
+      "weight": 30
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 42425,
+      "weight": 29
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 52220,
+      "weight": 27
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 107852,
+      "weight": 27
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 66911,
+      "weight": 27
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 71902,
+      "weight": 25
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 524809,
+      "weight": 24
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 583848,
+      "weight": 23
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 62062,
+      "weight": 28
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 136240,
+      "weight": 25
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 46457,
+      "weight": 21
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 145352,
+      "weight": 21
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 43775,
+      "weight": 20
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 15103,
+      "weight": 19
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 78361,
+      "weight": 29
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 63482,
+      "weight": 22
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 53267,
+      "weight": 18
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 22533,
+      "weight": 18
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 133214,
+      "weight": 17
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 81820,
+      "weight": 16
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 523630,
+      "weight": 15
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 43850,
+      "weight": 15
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 130806,
+      "weight": 18
+    },
+    {
+      "body_post": 10013,
+      "body_pre": 68790,
+      "weight": 11
+    }
+  ],
+  "pn_kc_edges": [
+    {
+      "body_post": 90569,
+      "body_pre": 11092,
+      "weight": 34
+    },
+    {
+      "body_post": 122703,
+      "body_pre": 11092,
+      "weight": 29
+    },
+    {
+      "body_post": 552118,
+      "body_pre": 11092,
+      "weight": 29
+    },
+    {
+      "body_post": 159261,
+      "body_pre": 11092,
+      "weight": 30
+    },
+    {
+      "body_post": 111695,
+      "body_pre": 11092,
+      "weight": 37
+    },
+    {
+      "body_post": 100615,
+      "body_pre": 11092,
+      "weight": 28
+    },
+    {
+      "body_post": 111109,
+      "body_pre": 11092,
+      "weight": 23
+    },
+    {
+      "body_post": 88132,
+      "body_pre": 11092,
+      "weight": 23
+    },
+    {
+      "body_post": 139988,
+      "body_pre": 11092,
+      "weight": 23
+    },
+    {
+      "body_post": 139093,
+      "body_pre": 11092,
+      "weight": 37
+    },
+    {
+      "body_post": 89269,
+      "body_pre": 11092,
+      "weight": 22
+    },
+    {
+      "body_post": 126779,
+      "body_pre": 11092,
+      "weight": 22
+    },
+    {
+      "body_post": 66047,
+      "body_pre": 11092,
+      "weight": 22
+    },
+    {
+      "body_post": 123841,
+      "body_pre": 11092,
+      "weight": 45
+    },
+    {
+      "body_post": 141046,
+      "body_pre": 11092,
+      "weight": 21
+    },
+    {
+      "body_post": 76564,
+      "body_pre": 11092,
+      "weight": 25
+    },
+    {
+      "body_post": 152118,
+      "body_pre": 11092,
+      "weight": 25
+    },
+    {
+      "body_post": 84932,
+      "body_pre": 11092,
+      "weight": 33
+    },
+    {
+      "body_post": 126815,
+      "body_pre": 11092,
+      "weight": 31
+    },
+    {
+      "body_post": 109512,
+      "body_pre": 11092,
+      "weight": 30
+    },
+    {
+      "body_post": 51053,
+      "body_pre": 11092,
+      "weight": 19
+    },
+    {
+      "body_post": 72854,
+      "body_pre": 11092,
+      "weight": 17
+    },
+    {
+      "body_post": 79622,
+      "body_pre": 11092,
+      "weight": 31
+    },
+    {
+      "body_post": 138053,
+      "body_pre": 11092,
+      "weight": 17
+    },
+    {
+      "body_post": 54746,
+      "body_pre": 12171,
+      "weight": 32
+    },
+    {
+      "body_post": 42425,
+      "body_pre": 12171,
+      "weight": 59
+    },
+    {
+      "body_post": 52220,
+      "body_pre": 12171,
+      "weight": 40
+    },
+    {
+      "body_post": 107852,
+      "body_pre": 12171,
+      "weight": 31
+    },
+    {
+      "body_post": 66911,
+      "body_pre": 12171,
+      "weight": 29
+    },
+    {
+      "body_post": 71902,
+      "body_pre": 12171,
+      "weight": 30
+    },
+    {
+      "body_post": 524809,
+      "body_pre": 12171,
+      "weight": 26
+    },
+    {
+      "body_post": 583848,
+      "body_pre": 12171,
+      "weight": 23
+    },
+    {
+      "body_post": 62062,
+      "body_pre": 12171,
+      "weight": 22
+    },
+    {
+      "body_post": 136240,
+      "body_pre": 12171,
+      "weight": 22
+    },
+    {
+      "body_post": 46457,
+      "body_pre": 12171,
+      "weight": 33
+    },
+    {
+      "body_post": 145352,
+      "body_pre": 12171,
+      "weight": 28
+    },
+    {
+      "body_post": 43775,
+      "body_pre": 12171,
+      "weight": 33
+    },
+    {
+      "body_post": 15103,
+      "body_pre": 12171,
+      "weight": 34
+    },
+    {
+      "body_post": 78361,
+      "body_pre": 12171,
+      "weight": 19
+    },
+    {
+      "body_post": 63482,
+      "body_pre": 12171,
+      "weight": 19
+    },
+    {
+      "body_post": 53267,
+      "body_pre": 12171,
+      "weight": 30
+    },
+    {
+      "body_post": 22533,
+      "body_pre": 12171,
+      "weight": 19
+    },
+    {
+      "body_post": 133214,
+      "body_pre": 12171,
+      "weight": 27
+    },
+    {
+      "body_post": 81820,
+      "body_pre": 12171,
+      "weight": 35
+    },
+    {
+      "body_post": 523630,
+      "body_pre": 12171,
+      "weight": 27
+    },
+    {
+      "body_post": 43850,
+      "body_pre": 12171,
+      "weight": 21
+    },
+    {
+      "body_post": 130806,
+      "body_pre": 12171,
+      "weight": 15
+    },
+    {
+      "body_post": 68790,
+      "body_pre": 12171,
+      "weight": 34
+    }
+  ],
+  "projection_neurons": {
+    "L": 11092,
+    "R": 12171
+  },
+  "projection_type": "DM2_lPN",
+  "selection": {
+    "kenyon_cells_per_side": 24,
+    "rule": "Exclude all food KCs; rank PN-KC-MBON pairs by bottleneck, product, KC ID; choose PN by top-24 minimum bottleneck, total products, PN ID"
+  },
+  "source_weights_sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1"
+}

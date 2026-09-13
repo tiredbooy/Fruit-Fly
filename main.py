@@ -11,6 +11,7 @@ import time
 from aiohttp import web
 
 from brain.circuit import CircuitManifest
+from brain.gym_circuit import load_gym_circuits
 from brain.data import (
     DataIntegrityError,
     MaleCNSAnnotations,
@@ -28,6 +29,7 @@ from experiments.experiment_001 import create_simulation
 from frontend.console import ConsoleRenderer, draw_frame, terminal_animation
 from frontend.server import ObservatoryConfig, create_app
 from simulation.loop import Simulation
+from gym_cli import add_gym_commands, run_gym
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -102,6 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Archive existing memory and start clean",
     )
+    add_gym_commands(commands, PROJECT_ROOT)
     return parser
 
 
@@ -141,6 +144,7 @@ def data_status() -> int:
             edges=release.edges,
             expected_weights_sha256=source.sources["weights"].sha256,
         )
+        gym_runtime, _, gym_learning = load_gym_circuits(PROJECT_ROOT, release=release)
     except (DataIntegrityError, ValueError, KeyError) as error:
         print(f"Data error: {error}")
         return 1
@@ -153,6 +157,8 @@ def data_status() -> int:
     print(f"Validated runtime edges: {len(runtime.edges):,}")
     print(f"Validated learning edges: {len(learning.orn_pn_edges + learning.pn_kc_edges + learning.plastic_edges):,}")
     print(f"Official PAM01 reward neurons: {len(learning.pam01_neurons):,}")
+    print(f"Validated gym runtime edges: {len(gym_runtime.edges):,}")
+    print(f"Validated gym learning edges: {len(gym_learning.orn_pn_edges + gym_learning.pn_kc_edges + gym_learning.plastic_edges):,}")
     print("Status: data is valid and ready")
     return 0
 
@@ -459,6 +465,8 @@ def run_web(
 
 def main(arguments: list[str] | None = None) -> int:
     parsed = build_parser().parse_args(arguments)
+    if parsed.command in {'gym', 'gym-web'}:
+        return run_gym(parsed, PROJECT_ROOT)
     if parsed.command == "data-status":
         return data_status()
     if parsed.command == "brain-build":

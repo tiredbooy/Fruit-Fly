@@ -1,0 +1,673 @@
+{
+  "dataset": "male-cns:v1.0",
+  "edges": [
+    {
+      "body_post": 10442,
+      "body_pre": 10030,
+      "weight": 67
+    },
+    {
+      "body_post": 10760,
+      "body_pre": 10038,
+      "weight": 72
+    },
+    {
+      "body_post": 10760,
+      "body_pre": 10373,
+      "weight": 190
+    },
+    {
+      "body_post": 521758,
+      "body_pre": 10408,
+      "weight": 12
+    },
+    {
+      "body_post": 19519,
+      "body_pre": 10567,
+      "weight": 64
+    },
+    {
+      "body_post": 24396,
+      "body_pre": 10567,
+      "weight": 226
+    },
+    {
+      "body_post": 11610,
+      "body_pre": 10628,
+      "weight": 51
+    },
+    {
+      "body_post": 13215,
+      "body_pre": 10628,
+      "weight": 18
+    },
+    {
+      "body_post": 19508,
+      "body_pre": 10702,
+      "weight": 59
+    },
+    {
+      "body_post": 173968,
+      "body_pre": 10702,
+      "weight": 241
+    },
+    {
+      "body_post": 520615,
+      "body_pre": 10702,
+      "weight": 18
+    },
+    {
+      "body_post": 11177,
+      "body_pre": 10778,
+      "weight": 42
+    },
+    {
+      "body_post": 10783,
+      "body_pre": 10971,
+      "weight": 12
+    },
+    {
+      "body_post": 527409,
+      "body_pre": 11517,
+      "weight": 18
+    },
+    {
+      "body_post": 10360,
+      "body_pre": 11610,
+      "weight": 186
+    },
+    {
+      "body_post": 10760,
+      "body_pre": 11863,
+      "weight": 211
+    },
+    {
+      "body_post": 11177,
+      "body_pre": 12974,
+      "weight": 14
+    },
+    {
+      "body_post": 10442,
+      "body_pre": 13215,
+      "weight": 35
+    },
+    {
+      "body_post": 10760,
+      "body_pre": 13273,
+      "weight": 121
+    },
+    {
+      "body_post": 13940,
+      "body_pre": 13431,
+      "weight": 32
+    },
+    {
+      "body_post": 10030,
+      "body_pre": 13940,
+      "weight": 117
+    },
+    {
+      "body_post": 10442,
+      "body_pre": 14040,
+      "weight": 131
+    },
+    {
+      "body_post": 10038,
+      "body_pre": 14319,
+      "weight": 139
+    },
+    {
+      "body_post": 512685,
+      "body_pre": 14473,
+      "weight": 29
+    },
+    {
+      "body_post": 514764,
+      "body_pre": 16128,
+      "weight": 30
+    },
+    {
+      "body_post": 10373,
+      "body_pre": 17340,
+      "weight": 31
+    },
+    {
+      "body_post": 524172,
+      "body_pre": 18571,
+      "weight": 11
+    },
+    {
+      "body_post": 512484,
+      "body_pre": 19277,
+      "weight": 31
+    },
+    {
+      "body_post": 523769,
+      "body_pre": 19508,
+      "weight": 83
+    },
+    {
+      "body_post": 532944,
+      "body_pre": 19508,
+      "weight": 20
+    },
+    {
+      "body_post": 10360,
+      "body_pre": 19519,
+      "weight": 39
+    },
+    {
+      "body_post": 11863,
+      "body_pre": 19519,
+      "weight": 18
+    },
+    {
+      "body_post": 187377,
+      "body_pre": 21982,
+      "weight": 25
+    },
+    {
+      "body_post": 10360,
+      "body_pre": 22063,
+      "weight": 24
+    },
+    {
+      "body_post": 51770,
+      "body_pre": 24236,
+      "weight": 12
+    },
+    {
+      "body_post": 10360,
+      "body_pre": 24396,
+      "weight": 20
+    },
+    {
+      "body_post": 91616,
+      "body_pre": 26149,
+      "weight": 14
+    },
+    {
+      "body_post": 76346,
+      "body_pre": 27196,
+      "weight": 32
+    },
+    {
+      "body_post": 75799,
+      "body_pre": 27390,
+      "weight": 36
+    },
+    {
+      "body_post": 10778,
+      "body_pre": 28080,
+      "weight": 10
+    },
+    {
+      "body_post": 41833,
+      "body_pre": 28221,
+      "weight": 11
+    },
+    {
+      "body_post": 13273,
+      "body_pre": 32400,
+      "weight": 13
+    },
+    {
+      "body_post": 26149,
+      "body_pre": 36800,
+      "weight": 30
+    },
+    {
+      "body_post": 94364,
+      "body_pre": 37738,
+      "weight": 24
+    },
+    {
+      "body_post": 11177,
+      "body_pre": 39427,
+      "weight": 19
+    },
+    {
+      "body_post": 16128,
+      "body_pre": 41833,
+      "weight": 31
+    },
+    {
+      "body_post": 519461,
+      "body_pre": 42084,
+      "weight": 12
+    },
+    {
+      "body_post": 39427,
+      "body_pre": 51770,
+      "weight": 14
+    },
+    {
+      "body_post": 134324,
+      "body_pre": 63316,
+      "weight": 25
+    },
+    {
+      "body_post": 10628,
+      "body_pre": 67052,
+      "weight": 36
+    },
+    {
+      "body_post": 14319,
+      "body_pre": 67052,
+      "weight": 38
+    },
+    {
+      "body_post": 42084,
+      "body_pre": 75799,
+      "weight": 18
+    },
+    {
+      "body_post": 32400,
+      "body_pre": 76346,
+      "weight": 12
+    },
+    {
+      "body_post": 11517,
+      "body_pre": 80841,
+      "weight": 15
+    },
+    {
+      "body_post": 519982,
+      "body_pre": 91616,
+      "weight": 13
+    },
+    {
+      "body_post": 19277,
+      "body_pre": 94364,
+      "weight": 10
+    },
+    {
+      "body_post": 14040,
+      "body_pre": 97200,
+      "weight": 14
+    },
+    {
+      "body_post": 523769,
+      "body_pre": 108445,
+      "weight": 12
+    },
+    {
+      "body_post": 22063,
+      "body_pre": 134324,
+      "weight": 14
+    },
+    {
+      "body_post": 523769,
+      "body_pre": 173968,
+      "weight": 28
+    },
+    {
+      "body_post": 11517,
+      "body_pre": 181207,
+      "weight": 17
+    },
+    {
+      "body_post": 13431,
+      "body_pre": 182016,
+      "weight": 21
+    },
+    {
+      "body_post": 530777,
+      "body_pre": 183425,
+      "weight": 15
+    },
+    {
+      "body_post": 10567,
+      "body_pre": 184230,
+      "weight": 38
+    },
+    {
+      "body_post": 525844,
+      "body_pre": 187377,
+      "weight": 11
+    },
+    {
+      "body_post": 11517,
+      "body_pre": 189518,
+      "weight": 13
+    },
+    {
+      "body_post": 10702,
+      "body_pre": 192631,
+      "weight": 29
+    },
+    {
+      "body_post": 67052,
+      "body_pre": 201965,
+      "weight": 34
+    },
+    {
+      "body_post": 10567,
+      "body_pre": 203339,
+      "weight": 18
+    },
+    {
+      "body_post": 67052,
+      "body_pre": 204061,
+      "weight": 18
+    },
+    {
+      "body_post": 10702,
+      "body_pre": 217529,
+      "weight": 10
+    },
+    {
+      "body_post": 10702,
+      "body_pre": 363119,
+      "weight": 27
+    },
+    {
+      "body_post": 10567,
+      "body_pre": 416090,
+      "weight": 24
+    },
+    {
+      "body_post": 10702,
+      "body_pre": 424866,
+      "weight": 13
+    },
+    {
+      "body_post": 11517,
+      "body_pre": 464464,
+      "weight": 11
+    },
+    {
+      "body_post": 10783,
+      "body_pre": 512484,
+      "weight": 42
+    },
+    {
+      "body_post": 28080,
+      "body_pre": 512685,
+      "weight": 18
+    },
+    {
+      "body_post": 10442,
+      "body_pre": 514764,
+      "weight": 174
+    },
+    {
+      "body_post": 523769,
+      "body_pre": 519461,
+      "weight": 244
+    },
+    {
+      "body_post": 10360,
+      "body_pre": 519982,
+      "weight": 184
+    },
+    {
+      "body_post": 17340,
+      "body_pre": 520554,
+      "weight": 13
+    },
+    {
+      "body_post": 10971,
+      "body_pre": 520615,
+      "weight": 26
+    },
+    {
+      "body_post": 10783,
+      "body_pre": 521758,
+      "weight": 26
+    },
+    {
+      "body_post": 97200,
+      "body_pre": 524172,
+      "weight": 10
+    },
+    {
+      "body_post": 10783,
+      "body_pre": 525844,
+      "weight": 13
+    },
+    {
+      "body_post": 12974,
+      "body_pre": 527409,
+      "weight": 21
+    },
+    {
+      "body_post": 10408,
+      "body_pre": 530777,
+      "weight": 51
+    },
+    {
+      "body_post": 10442,
+      "body_pre": 532944,
+      "weight": 207
+    },
+    {
+      "body_post": 108445,
+      "body_pre": 542103,
+      "weight": 10
+    },
+    {
+      "body_post": 520554,
+      "body_pre": 546043,
+      "weight": 31
+    },
+    {
+      "body_post": 542103,
+      "body_pre": 546087,
+      "weight": 20
+    },
+    {
+      "body_post": 530777,
+      "body_pre": 742571852,
+      "weight": 13
+    }
+  ],
+  "evidence": {
+    "annotations": {
+      "sha256": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/body-annotations-male-cns-v1.0-minconf-0.5.feather"
+    },
+    "neurotransmitters": {
+      "sha256": "95c9289220663abeb3409f3ad9e5a7f8a53f8093f5139d15502cd08da8879621",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/body-neurotransmitters-male-cns-v1.0.feather"
+    },
+    "weights": {
+      "sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1",
+      "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/connectome-weights-male-cns-v1.0-minconf-0.5.feather"
+    }
+  },
+  "gym_assumptions": [
+    "DM2 is a synthetic station cue, not a gym neuron identity.",
+    "KC learning modulates only its cue sensory gain; no assumed MBON fast-current sign.",
+    "Reward schedule and physiology are dimensionless model assumptions in docs/science/gym.md.",
+    "Descending motor drive powers a synthetic foreleg actuator; bench/curl joints, grip, range reflex and recovery are not measured neuron functions (docs/science/equipment.md)."
+  ],
+  "gym_selection": {
+    "maximum_hops": 4,
+    "minimum_weight": 10,
+    "routes": [
+      {
+        "bodies": [
+          424866,
+          10702,
+          520615,
+          10971,
+          10783
+        ],
+        "role": "forward_left",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          464464,
+          11517,
+          527409,
+          12974,
+          11177
+        ],
+        "role": "forward_right",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          201965,
+          67052,
+          10628,
+          13215,
+          10442
+        ],
+        "role": "steering_low_left",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          201965,
+          67052,
+          14319,
+          10038,
+          10760
+        ],
+        "role": "steering_low_right",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          424866,
+          10702,
+          173968,
+          523769
+        ],
+        "role": "steering_high_left",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          201965,
+          67052,
+          10628,
+          11610,
+          10360
+        ],
+        "role": "steering_high_right",
+        "side": "L"
+      },
+      {
+        "bodies": [
+          217529,
+          10702,
+          520615,
+          10971,
+          10783
+        ],
+        "role": "forward_left",
+        "side": "R"
+      },
+      {
+        "bodies": [
+          80841,
+          11517,
+          527409,
+          12974,
+          11177
+        ],
+        "role": "forward_right",
+        "side": "R"
+      },
+      {
+        "bodies": [
+          182016,
+          13431,
+          13940,
+          10030,
+          10442
+        ],
+        "role": "steering_low_left",
+        "side": "R"
+      },
+      {
+        "bodies": [
+          204061,
+          67052,
+          14319,
+          10038,
+          10760
+        ],
+        "role": "steering_low_right",
+        "side": "R"
+      },
+      {
+        "bodies": [
+          217529,
+          10702,
+          173968,
+          523769
+        ],
+        "role": "steering_high_left",
+        "side": "R"
+      },
+      {
+        "bodies": [
+          203339,
+          10567,
+          24396,
+          10360
+        ],
+        "role": "steering_high_right",
+        "side": "R"
+      }
+    ],
+    "rule": "ACH only; shortest, strongest bottleneck, largest product, ascending body IDs"
+  },
+  "motor_roles": {
+    "forward_left": 10783,
+    "forward_right": 11177,
+    "steering_high_left": 523769,
+    "steering_high_right": 10360,
+    "steering_low_left": 10442,
+    "steering_low_right": 10760
+  },
+  "selection": "Strongest-parent shortest paths, weight >= 10, maximum 4 hops, acetylcholine paths only",
+  "sensory_inputs": {
+    "gym_left": [
+      201965,
+      424866,
+      464464
+    ],
+    "gym_right": [
+      80841,
+      182016,
+      203339,
+      204061,
+      217529
+    ],
+    "smell_left": [
+      416090,
+      363119,
+      742571852,
+      189518
+    ],
+    "smell_right": [
+      184230,
+      192631,
+      183425,
+      181207
+    ],
+    "vision_left": [
+      36800,
+      18571,
+      546043,
+      21982,
+      14473,
+      546087
+    ],
+    "vision_right": [
+      63316,
+      28221,
+      27196,
+      37738,
+      24236,
+      27390
+    ]
+  },
+  "source_weights_sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1"
+}

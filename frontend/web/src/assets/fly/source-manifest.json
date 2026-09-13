@@ -1,0 +1,41 @@
+{
+  "source": "https://zenodo.org/records/14838021",
+  "download": "https://zenodo.org/api/records/14838021/files/Drosophila.zip/content",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "authors": [
+    "Orestis Katsamenis",
+    "Pieterjan De Boose",
+    "Herman Wijnen",
+    "Arno Thielens"
+  ],
+  "specimen": "Adult female Drosophila melanogaster; visual body only, not the MaleCNS specimen",
+  "source_md5": "bc42defec0f3754ec1e441d8a9176ba3",
+  "source_sha256": "3be6ff7bc3f599656d7d4721d8c6e7119585a1a47ff77510ae4cc41da4caaaa6",
+  "glb_sha256": "c967c27467b1373be70c32f90dffc56e6f11ce38d8699671f40740a2316a7d75",
+  "glb_bytes": 1432200,
+  "parts": {
+    "exoskeleton": {
+      "source_triangles": 893232,
+      "output_triangles": 45000
+    },
+    "wing_left": {
+      "source_triangles": 43444,
+      "output_triangles": 6000
+    },
+    "wing_right": {
+      "source_triangles": 44260,
+      "output_triangles": 6000
+    },
+    "halteres": {
+      "source_triangles": 53424,
+      "output_triangles": 2500
+    }
+  },
+  "changes": "Quadric mesh reduction; coordinate rotation/centering; 2.2-unit display scale; illustrative materials; external surfaces only",
+  "tools": {
+    "trimesh": "5.1.0",
+    "fast-simplification": "0.2.0",
+    "numpy": "2.5.3"
+  }
+}

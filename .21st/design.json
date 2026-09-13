@@ -6,9 +6,9 @@
     "stack": ["TypeScript", "Three.js", "Vite", "Bun", "aiohttp"]
   },
   "sources": {
-    "tokens": ["frontend/web/src/styles.css"],
+    "tokens": ["frontend/web/src/styles.css", "frontend/web/src/gym-observatory.css"],
     "components": ["frontend/web/index.html", "frontend/web/src"],
-    "assets": ["frontend/web/public/favicon.svg"],
+    "assets": ["frontend/web/public/favicon.svg", "frontend/web/src/assets/fly/walking-fly.glb", "frontend/web/src/assets/fly/walking-source.json", "frontend/web/public/assets/neuron-positions.json"],
     "instructions": ["AGENTS.md", "PRODUCT.md", "DESIGN.md"]
   },
   "design": {
@@ -16,22 +16,24 @@
     "colors": {
       "chamber": "#070b0f",
       "panel": "#14202a",
+      "arena": "#53665b",
       "sensory": "#58d6d0",
       "food": "#f2b84b",
       "neural": "#e36da6",
-      "text": "#e8efef"
+      "text": "#e8efef",
+      "unobservedSoma": "#507074"
     },
     "typography": {
       "interface": "local Persian system sans-serif",
       "technical": "ui-monospace"
     },
     "spacing": { "base": "4px", "panelGap": "14px" },
-    "radius": { "control": "12px", "panel": "14px" },
+    "radius": { "compactControl": "8px", "control": "12px", "panel": "14px" },
     "shadows": { "panel": "0 18px 48px 8px rgb(0 0 0 / 28%)" },
     "motion": {
       "quick": "140ms",
-      "standard": "300ms",
       "reveal": "650ms",
+      "livePulse": "2.4s",
       "easing": "cubic-bezier(0.2, 0, 0, 1)"
     },
     "density": "compact"
@@ -39,32 +41,69 @@
   "components": {
     "installed": [],
     "preferredPrimitives": ["semantic HTML", "native button", "native meter"],
-    "patterns": ["living specimen chamber", "instrument rail", "activity ribbon"]
+    "patterns": [
+      "living specimen chamber",
+      "instrument rail",
+      "observer-only overview, follow, and approximate eye cameras",
+      "tall gym at right; measured anatomy above training in left rail",
+      "four chamber rows in gym; hidden population form switches Experiment 1 to header, growing scene, and disclosure rows",
+      "native population setup and observer-only per-fly selection",
+      "measured MaleCNS soma cloud with received-positive, received-zero, and unobserved states",
+      "bounded live-telemetry neuron inspector inside an exact-readings disclosure"
+    ]
   },
   "constraints": {
     "must": [
       "Persian RTL browser copy",
       "official biological identifiers remain exact",
-      "browser observes and may only pause or resume",
-      "WebGL failure preserves live instruments"
+      "browser observes and may pause/resume or configure 1–10 population in gym schema 2",
+      "graphics or model failure preserves live instruments",
+      "live connection text and dot remain visible on mobile",
+      "native population field supplies Persian missing, fractional, and out-of-range validation",
+      "current fly-escape rig is user-authorized appearance reuse with no supplied public redistribution license",
+      "independent skeletons share geometry; walking follows displacement and feeding follows ingestion",
+      "authored appearance, display scale, and gait are not measured biomechanics or the MaleCNS specimen",
+      "former licensed female CT surface retains separate attribution",
+      "no flight animation without Python flight state; observer animation cannot move the physical root",
+      "soma positions use the pinned official MaleCNS annotations; missing coordinates are never invented",
+      "received-positive, received-zero, and unobserved anatomy remain visibly distinct",
+      "eye camera is approximate observer-only viewing, not biological compound vision",
+      "eye-mode canvas leaves the tab order and restores interactive semantics on exit",
+      "neuron search and readings remain bound to exact received telemetry labels, IDs, and values",
+      "positive neuron count is scoped to the selected fly's received subset and bounded scrolling retains zero and small nonzero readings"
     ],
     "avoid": [
       "invented anatomical claims",
       "frontend behavior rules",
       "remote fonts or analytics",
-      "decorative gradients"
+      "decorative gradients",
+      "invented neural spikes or structural connections"
     ]
   },
   "decisions": [
     {
       "choice": "living specimen chamber",
       "reason": "Makes continuous embodied neural state visible without presenting telemetry as thought."
+    },
+    {
+      "choice": "observer camera and received-neuron extension",
+      "reason": "Adds overview, follow, approximate eye observation, and exact searchable telemetry without changing simulation state or claiming biological vision."
+    },
+    {
+      "choice": "gym and measured anatomical observer extension",
+      "reason": "Preserves the established laboratory identity while placing a tall physical gym beside measured soma activity and selected-fly training; exact readings remain available in a disclosure."
     }
   ],
   "evidence": [
     { "fact": "project.instructions", "source": "AGENTS.md" },
     { "fact": "product.truth", "source": "PRODUCT.md" },
-    { "fact": "visual.system", "source": "DESIGN.md" }
+    { "fact": "visual.system", "source": "DESIGN.md" },
+    { "fact": "observer.camera", "source": "frontend/web/src/scene-camera.ts" },
+    { "fact": "observer.neuron-inspector", "source": "frontend/web/src/neuron-inspector.ts" },
+    { "fact": "observer.gym-layout", "source": "frontend/web/src/gym-observatory.css" },
+    { "fact": "observer.gym-validation", "source": "frontend/web/src/gym-dashboard.ts" },
+    { "fact": "observer.soma-map", "source": "frontend/web/src/neuron-map.ts" },
+    { "fact": "observer.authored-motion", "source": "frontend/web/src/animated-fly.ts" }
   ],
-  "generatedAt": "2026-09-13T12:00:00+03:30"
+  "generatedAt": "2026-09-13T11:34:51Z"
 }

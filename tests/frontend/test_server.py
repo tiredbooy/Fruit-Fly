@@ -10,7 +10,7 @@ from aiohttp.test_utils import TestClient, TestServer
 from brain.network import ConnectomeNetwork, RuntimeCircuit, RuntimeNode
 from brain.readout import MotorReadout
 from brain.sensory import BrainAdapter
-from frontend.server import ObservatoryConfig, create_app
+from frontend.server import ObservatoryConfig, ObservatoryServer, create_app
 from simulation.loop import Simulation
 from world.environment import Environment
 from world.fly import FlyBody, Physiology
@@ -26,6 +26,12 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
         (self.dist / "index.html").write_text("<main>observatory</main>")
         (self.dist / "favicon.svg").write_text("<svg></svg>")
         self.simulation = self._simulation()
+
+        class ObservedServer(ObservatoryServer):
+            def __init__(server, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.observer = server
+
         app = create_app(
             simulation=self.simulation,
             config=ObservatoryConfig(
@@ -34,6 +40,7 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
                 fps=30.0,
                 dist_path=self.dist,
             ),
+            server_type=ObservedServer,
         )
         self.client = TestClient(TestServer(app))
         await self.client.start_server()
@@ -66,7 +73,7 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
         socket = await self.client.ws_connect("/ws")
 
         hello = await socket.receive_json(timeout=1.0)
-        frame = await socket.receive_json(timeout=1.0)
+        frame = await self._receive_type(socket, "frame")
 
         self.assertEqual("hello", hello["type"])
         self.assertEqual("compact", hello["backend"])
@@ -77,6 +84,7 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
     async def test_pause_and_resume_change_only_the_simulation_clock(self) -> None:
         socket = await self.client.ws_connect("/ws")
         await socket.receive_json(timeout=1.0)
+        await self._receive_type(socket, "running")
         await socket.send_json({"type": "set_running", "running": False})
         state = await self._receive_type(socket, "running")
         paused_step = self.simulation.step_count
@@ -91,6 +99,20 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(resumed["running"])
         self.assertGreater(self.simulation.step_count, paused_step)
         await socket.close()
+
+    async def test_new_observer_receives_current_frame_while_paused(self) -> None:
+        first = await self.client.ws_connect("/ws")
+        await self._receive_type(first, "frame")
+        await first.send_json({"type": "set_running", "running": False})
+        await self._receive_type(first, "running")
+        observer = await self.client.ws_connect("/ws")
+        await self._receive_type(observer, "hello")
+        state = await self._receive_type(observer, "running")
+        frame = await self._receive_type(observer, "frame")
+        self.assertFalse(state["running"])
+        self.assertEqual(self.simulation.step_count, frame["step"])
+        await first.close()
+        await observer.close()
 
     async def test_invalid_command_returns_error_event(self) -> None:
         socket = await self.client.ws_connect("/ws")
@@ -110,6 +132,68 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
             )
 
         self.assertEqual(403, captured.exception.status)
+
+    async def test_disconnect_during_send_does_not_stop_other_observers_or_clock(self) -> None:
+        disconnected = await self.client.ws_connect('/ws')
+        await self._receive_type(disconnected, 'frame')
+        server_socket = next(iter(self.observer._clients))
+        healthy = await self.client.ws_connect('/ws')
+        await self._receive_type(healthy, 'frame')
+        entered_send = asyncio.Event()
+        release_send = asyncio.Event()
+        original_send = server_socket.send_json
+
+        async def delayed_send(message, *args, **kwargs):
+            if message.get('type') == 'frame':
+                entered_send.set()
+                await release_send.wait()
+            return await original_send(message, *args, **kwargs)
+
+        server_socket.send_json = delayed_send
+        await asyncio.wait_for(entered_send.wait(), timeout=1)
+        blocked_step = self.simulation.step_count
+        try:
+            await disconnected.close()
+        finally:
+            release_send.set()
+        # A buffered frame may predate the disconnect; require several subsequent frames.
+        observed = []
+        for _ in range(4):
+            observed.append((await self._receive_type(healthy, 'frame'))['step'])
+        self.assertGreater(observed[-1], blocked_step + 1)
+        self.assertNotIn(server_socket, self.observer._clients)
+        self.assertTrue(self.observer.running)
+        await healthy.close()
+
+    async def test_broadcast_does_not_swallow_invalid_json_values(self) -> None:
+        socket = await self.client.ws_connect('/ws')
+        await self._receive_type(socket, 'frame')
+        with self.assertRaises(TypeError):
+            await self.observer._broadcast({'type': 'invalid', 'value': object()})
+        await socket.close()
+
+    async def test_broadcast_propagates_cancellation(self) -> None:
+        socket = await self.client.ws_connect('/ws')
+        await self._receive_type(socket, 'frame')
+        server_socket = next(iter(self.observer._clients))
+        original_send = server_socket.send_json
+        entered_send = asyncio.Event()
+        release_send = asyncio.Event()
+
+        async def delayed_send(message, *args, **kwargs):
+            if message.get('type') == 'test_probe':
+                entered_send.set()
+                await release_send.wait()
+            return await original_send(message, *args, **kwargs)
+
+        server_socket.send_json = delayed_send
+        task = asyncio.create_task(self.observer._broadcast({'type': 'test_probe'}))
+        await asyncio.wait_for(entered_send.wait(), timeout=1)
+        task.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        server_socket.send_json = original_send
+        await socket.close()
 
     async def _receive_type(self, socket, expected: str) -> dict[str, object]:
         for _ in range(10):

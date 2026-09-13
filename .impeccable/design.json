@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-13T11:34:51Z",
+  "title": "Design System: FlyBrain Observatory",
+  "extensions": {
+    "colorMeta": {
+      "chamber-black": {
+        "role": "neutral",
+        "displayName": "Chamber black",
+        "tonalRamp": [
+          "oklch(15% 0.0112 246.6)",
+          "oklch(26% 0.0112 246.6)",
+          "oklch(38% 0.0112 246.6)",
+          "oklch(49% 0.0112 246.6)",
+          "oklch(61% 0.0112 246.6)",
+          "oklch(72% 0.0112 246.6)",
+          "oklch(84% 0.0112 246.6)",
+          "oklch(95% 0.0112 246.6)"
+        ]
+      },
+      "optical-slate": {
+        "role": "neutral",
+        "displayName": "Optical slate",
+        "tonalRamp": [
+          "oklch(15% 0.0257 244.3)",
+          "oklch(26% 0.0257 244.3)",
+          "oklch(38% 0.0257 244.3)",
+          "oklch(49% 0.0257 244.3)",
+          "oklch(61% 0.0257 244.3)",
+          "oklch(72% 0.0257 244.3)",
+          "oklch(84% 0.0257 244.3)",
+          "oklch(95% 0.0257 244.3)"
+        ]
+      },
+      "optical-line": {
+        "role": "neutral",
+        "displayName": "Optical line",
+        "tonalRamp": [
+          "oklch(15% 0.0365 234.0)",
+          "oklch(26% 0.0365 234.0)",
+          "oklch(38% 0.0365 234.0)",
+          "oklch(49% 0.0365 234.0)",
+          "oklch(61% 0.0365 234.0)",
+          "oklch(72% 0.0365 234.0)",
+          "oklch(84% 0.0365 234.0)",
+          "oklch(95% 0.0365 234.0)"
+        ]
+      },
+      "arena-surface": {
+        "role": "neutral",
+        "displayName": "Arena surface",
+        "tonalRamp": [
+          "oklch(15% 0.0289 159.7)",
+          "oklch(26% 0.0289 159.7)",
+          "oklch(38% 0.0289 159.7)",
+          "oklch(49% 0.0289 159.7)",
+          "oklch(61% 0.0289 159.7)",
+          "oklch(72% 0.0289 159.7)",
+          "oklch(84% 0.0289 159.7)",
+          "oklch(95% 0.0289 159.7)"
+        ]
+      },
+      "specimen-cyan": {
+        "role": "primary",
+        "displayName": "Specimen cyan",
+        "tonalRamp": [
+          "oklch(15% 0.1112 190.8)",
+          "oklch(26% 0.1112 190.8)",
+          "oklch(38% 0.1112 190.8)",
+          "oklch(49% 0.1112 190.8)",
+          "oklch(61% 0.1112 190.8)",
+          "oklch(72% 0.1112 190.8)",
+          "oklch(84% 0.1112 190.8)",
+          "oklch(95% 0.1112 190.8)"
+        ]
+      },
+      "food-amber": {
+        "role": "secondary",
+        "displayName": "Food amber",
+        "tonalRamp": [
+          "oklch(15% 0.1399 80.1)",
+          "oklch(26% 0.1399 80.1)",
+          "oklch(38% 0.1399 80.1)",
+          "oklch(49% 0.1399 80.1)",
+          "oklch(61% 0.1399 80.1)",
+          "oklch(72% 0.1399 80.1)",
+          "oklch(84% 0.1399 80.1)",
+          "oklch(95% 0.1399 80.1)"
+        ]
+      },
+      "motor-magenta": {
+        "role": "tertiary",
+        "displayName": "Motor/neural magenta",
+        "tonalRamp": [
+          "oklch(15% 0.1590 351.8)",
+          "oklch(26% 0.1590 351.8)",
+          "oklch(38% 0.1590 351.8)",
+          "oklch(49% 0.1590 351.8)",
+          "oklch(61% 0.1590 351.8)",
+          "oklch(72% 0.1590 351.8)",
+          "oklch(84% 0.1590 351.8)",
+          "oklch(95% 0.1590 351.8)"
+        ]
+      },
+      "paper-white": {
+        "role": "neutral",
+        "displayName": "Paper white",
+        "tonalRamp": [
+          "oklch(15% 0.0075 197.0)",
+          "oklch(26% 0.0075 197.0)",
+          "oklch(38% 0.0075 197.0)",
+          "oklch(49% 0.0075 197.0)",
+          "oklch(61% 0.0075 197.0)",
+          "oklch(72% 0.0075 197.0)",
+          "oklch(84% 0.0075 197.0)",
+          "oklch(95% 0.0075 197.0)"
+        ]
+      },
+      "muted-cyan": {
+        "role": "neutral",
+        "displayName": "Muted cyan",
+        "tonalRamp": [
+          "oklch(15% 0.0315 207.0)",
+          "oklch(26% 0.0315 207.0)",
+          "oklch(38% 0.0315 207.0)",
+          "oklch(49% 0.0315 207.0)",
+          "oklch(61% 0.0315 207.0)",
+          "oklch(72% 0.0315 207.0)",
+          "oklch(84% 0.0315 207.0)",
+          "oklch(95% 0.0315 207.0)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Danger",
+        "tonalRamp": [
+          "oklch(15% 0.1630 26.6)",
+          "oklch(26% 0.1630 26.6)",
+          "oklch(38% 0.1630 26.6)",
+          "oklch(49% 0.1630 26.6)",
+          "oklch(61% 0.1630 26.6)",
+          "oklch(72% 0.1630 26.6)",
+          "oklch(84% 0.1630 26.6)",
+          "oklch(95% 0.1630 26.6)"
+        ]
+      },
+      "unobserved-soma": {
+        "role": "neutral",
+        "displayName": "Unobserved soma",
+        "tonalRamp": [
+          "oklch(15% 0.0373 205.7)",
+          "oklch(26% 0.0373 205.7)",
+          "oklch(38% 0.0373 205.7)",
+          "oklch(49% 0.0373 205.7)",
+          "oklch(61% 0.0373 205.7)",
+          "oklch(72% 0.0373 205.7)",
+          "oklch(84% 0.0373 205.7)",
+          "oklch(95% 0.0373 205.7)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Page headline",
+        "purpose": "Compact Persian observatory identity."
+      },
+      "title": {
+        "displayName": "Section title",
+        "purpose": "Persian headings for chamber, anatomy, and instruments."
+      },
+      "label": {
+        "displayName": "Interface label",
+        "purpose": "Population, connection, and paired-reading labels."
+      },
+      "reading": {
+        "displayName": "Scientific reading",
+        "purpose": "Exact LTR monospaced measured values."
+      },
+      "code": {
+        "displayName": "Technical code",
+        "purpose": "Backend, step, elapsed time, and official metadata."
+      }
+    },
+    "shadows": [
+      {
+        "name": "chamber",
+        "value": "0 18px 48px 8px rgb(0 0 0 / 28%)",
+        "purpose": "Ambient chamber separation from the dark page."
+      },
+      {
+        "name": "instrument-rail",
+        "value": "0 16px 44px 6px rgb(0 0 0 / 22%)",
+        "purpose": "Slate rail elevation."
+      },
+      {
+        "name": "search-focus",
+        "value": "0 0 0 2px rgb(88 214 208 / 22%)",
+        "purpose": "Visible search focus alongside its cyan border."
+      }
+    ],
+    "motion": [
+      {
+        "name": "quick",
+        "value": "140ms",
+        "purpose": "Primary-action hover and press transition."
+      },
+      {
+        "name": "reveal",
+        "value": "650ms",
+        "purpose": "Chamber entry reveal; suppressed for reduced motion."
+      },
+      {
+        "name": "live-pulse",
+        "value": "2.4s ease-in-out infinite",
+        "purpose": "Connected status dot only; suppressed for reduced motion."
+      },
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.2, 0, 0, 1)",
+        "purpose": "Primary interaction and chamber reveal easing."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stacked",
+        "value": "900px"
+      },
+      {
+        "name": "narrow",
+        "value": "560px"
+      },
+      {
+        "name": "short-desktop",
+        "value": "(max-height: 900px) and (min-width: 901px)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Pause/resume action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Single primary session action. The runtime disables it until a supported live connection is available.",
+      "html": "<button class=\"ds-primary\" type=\"button\" dir=\"rtl\">توقف</button>",
+      "css": ".ds-primary{font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;min-width:86px;min-height:40px;border:1px solid var(--specimen-cyan,#58d6d0);border-radius:12px;color:var(--chamber-black,#070b0f);background:var(--specimen-cyan,#58d6d0);cursor:pointer;transition:transform 140ms var(--ease,cubic-bezier(0.2,0,0,1)),background 140ms var(--ease,cubic-bezier(0.2,0,0,1))}.ds-primary:hover:not(:disabled){background:#7ce5df;transform:translateY(-1px)}.ds-primary:active:not(:disabled){transform:translateY(1px) scale(.98)}.ds-primary:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:3px}.ds-primary:disabled{cursor:not-allowed;opacity:.45}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}}"
+    },
+    {
+      "name": "Observer camera controls",
+      "kind": "button",
+      "refersTo": "button-camera",
+      "description": "Overview, follow, and approximate eye modes affect the observer only; runtime owns pressed state and the initialized renderer label.",
+      "html": "<div class=\"ds-cameras\" role=\"group\" aria-label=\"کنترل دوربین\" dir=\"rtl\"><button type=\"button\" aria-pressed=\"true\">نمای محیط</button><button type=\"button\" aria-pressed=\"false\">دنبال کردن مگس</button><button type=\"button\" aria-pressed=\"false\">نمای چشم مگس</button></div>",
+      "css": ".ds-cameras{display:flex;flex-wrap:wrap;gap:8px}.ds-cameras button{font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;min-height:40px;padding:6px 12px;border:1px solid var(--optical-line,#29404d);border-radius:12px;background:var(--chamber-black,#070b0f);color:var(--paper-white,#e8efef);cursor:pointer}.ds-cameras button:hover:not(:disabled){border-color:var(--specimen-cyan,#58d6d0)}.ds-cameras button[aria-pressed=true]{border-color:var(--specimen-cyan,#58d6d0);color:var(--chamber-black,#070b0f);background:var(--specimen-cyan,#58d6d0)}.ds-cameras button:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:3px}.ds-cameras button:disabled{opacity:.5;cursor:wait}"
+    },
+    {
+      "name": "Population apply action",
+      "kind": "button",
+      "refersTo": "button-population",
+      "description": "Secondary command in gym schema 2; disabled while a population command is pending or the connection is unavailable.",
+      "html": "<button class=\"ds-population-action\" type=\"button\" dir=\"rtl\">اعمال تعداد</button>",
+      "css": ".ds-population-action{font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;min-height:36px;padding:5px 10px;border:1px solid var(--optical-line,#29404d);border-radius:8px;background:var(--chamber-black,#070b0f);color:var(--paper-white,#e8efef);cursor:pointer;font-size:.74rem}.ds-population-action:hover{border-color:var(--specimen-cyan,#58d6d0)}.ds-population-action:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:3px}.ds-population-action:disabled{opacity:.5;cursor:not-allowed}"
+    },
+    {
+      "name": "Per-fly selection",
+      "kind": "chip",
+      "description": "Wrapping native buttons select the observed fly. Pressed state changes border and text without becoming the primary action.",
+      "html": "<div class=\"ds-flies\" role=\"group\" aria-label=\"انتخاب مگس برای مشاهده\" dir=\"rtl\"><button type=\"button\" aria-pressed=\"true\">مگس ۱</button></div>",
+      "css": ".ds-flies{display:flex;flex-wrap:wrap;gap:6px}.ds-flies button{font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;min-height:36px;padding:5px 10px;border:1px solid var(--optical-line,#29404d);border-radius:8px;background:var(--chamber-black,#070b0f);color:var(--paper-white,#e8efef);cursor:pointer;font-size:.74rem}.ds-flies button:hover,.ds-flies button[aria-pressed=true]{border-color:var(--specimen-cyan,#58d6d0)}.ds-flies button[aria-pressed=true]{color:var(--specimen-cyan,#58d6d0)}.ds-flies button:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:3px}"
+    },
+    {
+      "name": "Population count field",
+      "kind": "input",
+      "refersTo": "input-population",
+      "description": "Native integer field retains 1–10 bounds and an associated status. Runtime invalid handlers provide Persian messages for missing, fractional, and out-of-range input, then clear stale messages on edit or acknowledgement.",
+      "html": "<div class=\"ds-count\" dir=\"rtl\"><label for=\"ds-fly-count\">تعداد مگس</label><input id=\"ds-fly-count\" type=\"number\" min=\"1\" max=\"10\" step=\"1\" value=\"1\" required aria-describedby=\"ds-count-status\"><span id=\"ds-count-status\" role=\"status\"></span></div>",
+      "css": ".ds-count{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font:.78rem Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;color:var(--paper-white,#e8efef)}.ds-count input{width:4.5rem;min-height:36px;padding:4px 8px;border:1px solid var(--optical-line,#29404d);border-radius:8px;background:var(--chamber-black,#070b0f);color:var(--paper-white,#e8efef);font:inherit;caret-color:var(--specimen-cyan,#58d6d0);color-scheme:dark}.ds-count input:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:2px}.ds-count input:disabled{opacity:.5;cursor:not-allowed}.ds-count span{color:var(--muted-cyan,#8aa6aa);font-size:.72rem}"
+    },
+    {
+      "name": "Received-neuron search",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Exact label/ID substring search filters received semantic readings and mapped overlays together; it does not search invented activity.",
+      "html": "<label class=\"ds-neuron-search\" for=\"ds-neuron-query\" dir=\"rtl\"><span>جست‌وجو</span><input id=\"ds-neuron-query\" type=\"search\" placeholder=\"نام یا شناسه\" autocomplete=\"off\"></label>",
+      "css": ".ds-neuron-search{display:grid;gap:3px;color:var(--muted-cyan,#8aa6aa);font:.64rem Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif}.ds-neuron-search input{width:140px;min-height:36px;padding:6px 10px;border:1px solid var(--optical-line,#29404d);border-radius:12px;outline:none;color:var(--paper-white,#e8efef);background:var(--chamber-black,#070b0f);font:.7rem/1 ui-monospace,monospace;direction:ltr}.ds-neuron-search input:focus-visible{border-color:var(--specimen-cyan,#58d6d0);box-shadow:0 0 0 2px rgb(88 214 208 / 22%)}"
+    },
+    {
+      "name": "Training instrument",
+      "kind": "card",
+      "refersTo": "instrument-rail",
+      "description": "Slate instrument surface with the actual initial zero-set state and native progress meter. Live values and curves come from the selected fly; illustrative previews do not generate telemetry.",
+      "html": "<section class=\"ds-training\" dir=\"rtl\" aria-labelledby=\"ds-training-title\"><div class=\"ds-training-heading\"><h2 id=\"ds-training-title\">تمرین مقاومتی</h2><span class=\"ds-training-sets\" dir=\"ltr\">0</span></div><div class=\"ds-training-reading\"><label for=\"ds-training-progress\">پیشرفت ست</label><span>۰%</span></div><meter id=\"ds-training-progress\" min=\"0\" max=\"1\" value=\"0\">0</meter></section>",
+      "css": ".ds-training{padding:17px;border:1px solid var(--optical-line,#29404d);border-radius:14px;background:var(--optical-slate,#14202a);color:var(--paper-white,#e8efef);font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif;box-shadow:0 16px 44px 6px rgb(0 0 0 / 22%)}.ds-training-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.ds-training h2{margin:0;font-size:1rem;font-weight:640}.ds-training-sets{color:var(--specimen-cyan,#58d6d0);font:700 1.6rem/1.2 ui-monospace,monospace}.ds-training-sets::after{content:\" ست\";font:.75rem Tahoma,sans-serif}.ds-training-reading{display:flex;justify-content:space-between;gap:12px;padding:7px 0;color:var(--muted-cyan,#8aa6aa);font-size:.78rem}.ds-training meter{width:100%;height:8px;border:0;background:#091016}.ds-training meter::-webkit-meter-bar{border:0;border-radius:6px;background:#091016}.ds-training meter::-webkit-meter-optimum-value{border-radius:6px;background:var(--food-amber,#f2b84b)}"
+    },
+    {
+      "name": "Exact-readings disclosure",
+      "kind": "custom",
+      "description": "Native disclosure keeps exact semantic neuron readings available below anatomy, including when anatomy cannot load. Its bounded region preserves zeros and small positive values.",
+      "html": "<details class=\"ds-neuron-details\" dir=\"rtl\"><summary>خوانش‌های دقیق</summary><div class=\"ds-neuron-results\"><p role=\"status\">در انتظار داده‌های نورونی…</p></div></details>",
+      "css": ".ds-neuron-details{border-top:1px solid var(--optical-line,#29404d);background:#0b1218;font-family:Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif}.ds-neuron-details summary{padding:6px 16px;font-size:.74rem;color:var(--muted-cyan,#8aa6aa);cursor:pointer}.ds-neuron-details summary:focus-visible{outline:2px solid var(--food-amber,#f2b84b);outline-offset:2px}.ds-neuron-results{max-height:220px;overflow-y:auto;scrollbar-color:var(--muted-cyan,#8aa6aa) var(--chamber-black,#070b0f);scrollbar-width:thin}.ds-neuron-results p{margin:0;padding:9px 14px;color:var(--muted-cyan,#8aa6aa);font-size:.72rem;text-align:center}"
+    },
+    {
+      "name": "Connection status",
+      "kind": "custom",
+      "description": "Text and dot remain visible on desktop and mobile. This preview uses the real connecting state; only received connection state enables the cyan live pulse.",
+      "html": "<div class=\"ds-connection\" aria-live=\"polite\" dir=\"rtl\"><span class=\"ds-connection-dot\"></span><span>در حال اتصال</span></div>",
+      "css": ".ds-connection{display:flex;align-items:center;gap:8px;color:var(--muted-cyan,#8aa6aa);font:.78rem Vazirmatn,IRANSansX,\"Noto Sans Arabic\",Tahoma,sans-serif}.ds-connection-dot{width:7px;height:7px;border-radius:50%;background:var(--food-amber,#f2b84b)}.ds-connection-dot[data-state=open]{background:var(--specimen-cyan,#58d6d0);box-shadow:0 0 10px 2px rgb(88 214 208 / 35%);animation:ds-live-pulse 2.4s ease-in-out infinite}.ds-connection-dot[data-state=incompatible]{background:var(--danger,#ff7b70)}@keyframes ds-live-pulse{50%{transform:scale(1.25);box-shadow:0 0 14px 3px rgb(88 214 208 / 42%)}}@media(prefers-reduced-motion:reduce){.ds-connection-dot[data-state=open]{animation:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Living specimen chamber",
+    "overview": "The interface is a living specimen chamber: a large dark observation field with a restrained scientific instrument rail. It shows measurements and motion, not narrative claims about thought or consciousness.\n\nThe gym extends the same laboratory identity with a dimensional arena, authored fly bodies, and measured anatomical points. Compact Persian controls and exact monospaced readings support observation; model limitations stay available in short disclosures.",
+    "keyCharacteristics": [
+      "Dark chamber and slate instruments with restrained cyan, amber, and magenta.",
+      "Persian interface text with exact official identities and monospaced readings.",
+      "Physical observation first, measured anatomy and training alongside it.",
+      "Visible connection state and usable instruments when graphics are unavailable."
+    ],
+    "rules": [
+      {
+        "name": "The Reading State Rule",
+        "body": "Positive, received-zero, and unobserved soma points must remain distinguishable; absent activity is never rendered as a measured zero.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do preserve the dark chamber, slate instruments, and existing accent roles.",
+      "Do keep Persian labels, bound field names, visible focus, and connection status at every width.",
+      "Do bind animation and displayed readings to received simulation state.",
+      "Do distinguish measured anatomy, received activity, and authored appearance."
+    ],
+    "donts": [
+      "Don't invent neuron locations, connections, spikes, or missing activity values.",
+      "Don't describe the authored rig, enlarged display scale, or gait as measured biomechanics.",
+      "Don't let camera or fly selection steer, feed, or inject neural activity.",
+      "Don't add remote fonts, tracking resources, or decorative dashboard chrome."
+    ]
+  }
+}

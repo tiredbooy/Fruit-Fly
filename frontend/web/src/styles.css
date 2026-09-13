@@ -528,13 +528,14 @@ body[data-running="false"] .scene::after {
     min-height: 72px;
   }
 
-  .identity-code,
-  .connection {
+  .identity-code {
     display: none;
   }
 
   .session-controls {
-    gap: 8px;
+    flex-direction: column;
+    gap: 4px;
+    padding-block: 6px;
   }
 
   .workspace {

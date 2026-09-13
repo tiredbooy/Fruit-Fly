@@ -1,0 +1,72 @@
+/* The same observatory, expanded for physical training and measured anatomy. */
+.workspace { grid-template-rows: 410px minmax(0, 1fr); grid-template-areas: "anatomy chamber" "instruments chamber"; }
+.chamber { grid-area: chamber; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.chamber:has(.gym-toolbar form[hidden]) { grid-template-rows: auto minmax(0, 1fr) auto; }
+.instruments { grid-area: instruments; }
+.activity-ribbon { grid-area: anatomy; }
+.gym-toolbar { background: var(--optical-slate); }
+.gym-toolbar:has(form[hidden]) { display: none; }
+#population-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px 6px; font-size: 0.78rem; }
+#population-form[hidden], #fly-picker[hidden], #training-instrument[hidden] { display: none; }
+#fly-count { width: 4.5rem; min-height: 36px; padding: 4px 8px; border: 1px solid var(--optical-line); border-radius: 8px; background: var(--chamber-black); color: var(--paper-white); font: inherit; caret-color: var(--specimen-cyan); }
+#fly-count:focus-visible, summary:focus-visible, .neuron-map canvas:focus-visible { outline: 2px solid var(--food-amber); outline-offset: 2px; }
+#population-status { color: var(--muted-cyan); font-size: 0.72rem; }
+#fly-picker { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 16px 10px; }
+#apply-population, #fly-picker button { min-height: 36px; padding: 5px 10px; border: 1px solid var(--optical-line); border-radius: 8px; background: var(--chamber-black); color: var(--paper-white); cursor: pointer; font-size: 0.74rem; }
+#apply-population:hover, #fly-picker button:hover { border-color: var(--specimen-cyan); }
+#fly-picker button[aria-pressed="true"] { border-color: var(--specimen-cyan); color: var(--specimen-cyan); }
+#apply-population:disabled, #fly-count:disabled { opacity: 0.5; cursor: not-allowed; }
+#gym-sets { color: var(--specimen-cyan); font: 700 1.6rem/1.2 ui-monospace, monospace; }
+#gym-sets::after { content: " ست"; font: 0.75rem Tahoma, sans-serif; }
+.training-readings { margin-top: 8px; }
+.training-readings .paired-reading { padding-block: 4px; }
+.training-readings span[dir="ltr"] { color: var(--paper-white); font: 0.76rem ui-monospace, monospace; }
+.training-curve { display: block; width: 100%; height: 80px; margin-top: 10px; }
+.curve-axis { fill: none; stroke: var(--optical-line); stroke-width: 1; }
+.training-curve polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
+#curve-association { stroke: var(--motor-magenta); }
+#curve-fatigue { stroke: var(--food-amber); }
+.curve-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.65rem; color: var(--muted-cyan); }
+.curve-legend span:first-child { color: var(--motor-magenta); }
+.curve-legend span:nth-child(2) { color: var(--food-amber); }
+.training-note { margin-top: 12px; color: var(--muted-cyan); font-size: 0.7rem; }
+.training-note summary, .neuron-details summary { cursor: pointer; }
+.training-note p { padding-top: 6px; line-height: 1.8; }
+.activity-ribbon { display: flex; flex-direction: column; overflow-y: auto; }
+.activity-heading { flex-shrink: 0; flex-direction: column; align-items: stretch; gap: 8px; }
+.neuron-tools { justify-content: space-between; gap: 8px; }
+.neuron-search-control input { width: 140px; }
+.neuron-map { position: relative; flex: 1 0 170px; min-height: 170px; overflow: hidden; background: var(--chamber-black); }
+.neuron-map canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.anatomy-loading { position: absolute; inset: 42% 16px auto; text-align: center; font-size: 0.8rem; color: var(--muted-cyan); }
+.anatomy-selection { position: absolute; bottom: 6px; left: 12px; font: 0.65rem/1.5 ui-monospace, Tahoma, sans-serif; color: var(--paper-white); pointer-events: none; }
+.anatomy-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 6px 16px; color: var(--muted-cyan); font-size: 0.66rem; }
+.anatomy-legend { display: flex; gap: 10px; }
+.anatomy-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-inline-end: 4px; background: #507074; border-radius: 50%; }
+.anatomy-legend span:first-child::before { background: var(--motor-magenta); }
+.anatomy-legend span:nth-child(2)::before { background: var(--food-amber); }
+.neuron-details { flex-shrink: 0; border-top: 1px solid var(--optical-line); }
+.neuron-details summary { padding: 6px 16px; font-size: 0.74rem; color: var(--muted-cyan); }
+.neuron-details .neuron-results { max-height: 220px; }
+@media (max-height: 900px) and (min-width: 901px) {
+  body { overflow-y: auto; }
+  .app-shell { min-height: 940px; height: auto; }
+  .workspace { grid-template-rows: 410px 410px; }
+}
+@media (max-width: 900px) {
+  .workspace { grid-template-rows: auto; grid-template-areas: "chamber" "anatomy" "instruments"; }
+  .chamber { min-height: 560px; }
+  .activity-ribbon { height: 440px; }
+  .neuron-map { min-height: 220px; }
+}
+@media (max-width: 560px) {
+  #population-form { padding-inline: 10px; }
+  #population-status { flex-basis: 100%; }
+  #fly-picker { padding-inline: 10px; }
+  .chamber { min-height: 580px; }
+  .anatomy-footer { padding-inline: 10px; }
+}
+.exercise-readings { padding-block: 4px 12px; }
+.exercise-status { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-block-end: 8px; }
+.exercise-status h3 { margin: 0; font-size: 1.1rem; font-weight: 650; }
+.exercise-status span { color: var(--muted-cyan); font-size: .78rem; }

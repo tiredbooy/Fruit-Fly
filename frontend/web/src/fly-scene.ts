@@ -1,199 +1,130 @@
-import * as THREE from "three";
-
-import {
-  createChamber,
-  createFly,
-  createFood,
-  createNeuralHalo,
-  createOdorHalo,
-  createTrail,
-  MAX_NEURAL_PARTICLES,
-} from "./scene-primitives";
+import * as THREE from "three/webgpu";
+import { createFood, createOdorHalo, createTrail, disposeScene } from "./scene-primitives";
+import { createWorldScene, lightWorld } from "./world-scene";
+import { loadFlyModel } from "./fly-model";
+import { FlyPopulation } from "./fly-population";
+import { createGymStation } from "./gym-scene";
+import { EquipmentScene } from "./equipment-scene";
+import { createGraphicsRenderer, graphicsBackend } from "./graphics-renderer";
+import { SceneCamera } from "./scene-camera";
+import { odorHaloScale, worldToScene } from "./scene-math";
 import type { FrameMessage, HelloMessage } from "./types";
-
-const CHAMBER_HEIGHT = 14;
-
-export function worldToScene(
-  x: number,
-  y: number,
-  worldWidth: number,
-  worldHeight: number,
-): { x: number; z: number } {
-  return {
-    x: (x / worldWidth) * 20,
-    z: -(y / worldHeight) * 12,
-  };
-}
-
-export function interpolateHeading(from: number, to: number, amount: number): number {
-  let delta = ((to - from + Math.PI) % (Math.PI * 2)) - Math.PI;
-  if (delta < -Math.PI) delta += Math.PI * 2;
-  return from + delta * amount;
-}
-
-export function odorHaloScale(strength: number | null): number {
-  if (strength === null || strength <= 0) return 0;
-  return Math.min(2.4, 0.5 + strength);
-}
-
-export function neuralIntensity(activity: readonly number[]): number {
-  if (!activity.length) return 0;
-  const mean = activity.reduce((sum, value) => sum + value, 0) / activity.length;
-  return Math.min(1, Math.max(0, mean));
-}
-
-export function cameraFocusX(
-  targetX: number,
-  visibleWidth: number,
-  chamberWidth: number,
-): number {
-  if (visibleWidth >= chamberWidth) return 0;
-  const travel = (chamberWidth - visibleWidth) / 2;
-  return Math.min(travel, Math.max(-travel, targetX));
-}
+import type { GymFrame } from "./gym-types";
+import type { GLTF } from "three/addons/loaders/GLTFLoader.js";
 
 export class FlyScene {
   private readonly scene = new THREE.Scene();
-  private readonly camera = new THREE.OrthographicCamera();
-  private readonly renderer: THREE.WebGLRenderer;
-  private readonly fly = createFly();
+  private readonly cameraRig: SceneCamera;
+  private readonly population: FlyPopulation;
   private readonly food = createFood();
   private readonly odor = createOdorHalo();
   private readonly trail = createTrail();
-  private readonly neural = createNeuralHalo();
-  private readonly clock = new THREE.Clock();
-  private readonly reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  private readonly resizeObserver: ResizeObserver;
+  private readonly motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
   private world = { width: 20, height: 12 };
-  private targetPosition = new THREE.Vector3();
-  private targetHeading = 0;
-  private visible = true;
+  private station: THREE.Group | null = null;
+  private visible = !document.hidden;
   private running = true;
-  private animationFrame = 0;
+  private disposed = false;
+  private lastTime = 0;
 
-  constructor(private readonly container: HTMLElement) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.renderer.domElement.setAttribute("aria-hidden", "true");
-    this.container.prepend(this.renderer.domElement);
-    this.composeScene();
-    this.resize();
-    this.render();
+  static async create(container: HTMLElement, onFailure: () => void): Promise<FlyScene> {
+    const { renderer, assertHealthy } = await createGraphicsRenderer(new URLSearchParams(location.search).get("renderer") === "webgl", onFailure);
+    let scene: FlyScene | null = null;
+    try {
+      const asset = await loadFlyModel(); assertHealthy();
+      scene = new FlyScene(container, renderer, asset);
+      await renderer.compileAsync(scene.scene, scene.cameraRig.camera); assertHealthy();
+      await renderer.setAnimationLoop((time) => scene?.render(time)); assertHealthy();
+      container.dataset.renderer = graphicsBackend(renderer);
+      container.dataset.model = "authored-rig";
+      return scene;
+    } catch (error) {
+      if (scene) await scene.dispose(); else await renderer.dispose();
+      throw error;
+    }
   }
+
+  private constructor(private readonly container: HTMLElement, private readonly renderer: THREE.WebGPURenderer, asset: GLTF) {
+    this.cameraRig = new SceneCamera(renderer.domElement, this.motionPreference.matches);
+    this.population = new FlyPopulation(asset);
+    this.container.prepend(renderer.domElement);
+    lightWorld(this.scene);
+    this.scene.add(createWorldScene(), this.population.group, this.food, this.odor, this.trail);
+    this.food.visible = false; this.odor.visible = false;
+    this.resizeObserver = new ResizeObserver(() => this.resize());
+    this.resizeObserver.observe(container); this.resize();
+  }
+
+  get backend(): string { return graphicsBackend(this.renderer); }
 
   configure(message: HelloMessage): void {
     this.world = message.world;
+    if (this.station) { this.scene.remove(this.station); disposeScene(this.station); this.station = null; }
+    this.population.equipment = null;
+    if (message.schema === 3) {
+      const equipment = new EquipmentScene(message.equipment!,this.world);
+      this.population.equipment = equipment; this.station = equipment.group;
+      this.scene.add(this.station);
+    } else if (message.schema === 2) {
+      this.station = createGymStation(message.station, this.world); this.scene.add(this.station);
+    }
   }
 
   update(frame: FrameMessage): void {
-    const body = worldToScene(frame.body.x, frame.body.y, this.world.width, this.world.height);
-    this.targetPosition.set(body.x, 0.5, body.z);
-    this.targetHeading = frame.body.heading;
-    this.updateFood(frame);
-    this.updateTrail(frame.trail);
-    this.updateNeuralHalo(frame);
+    this.population.update([{id: "fly-1", frame}], this.world);
+    this.updateSelected(frame);
+  }
+  updateGym(message: GymFrame, selectedId: string): void {
+    this.population.selectedId = selectedId;
+    this.population.update(message.flies.map((fly) => ({...fly, distance: fly.training.distance})), this.world);
+    this.updateSelected(message.flies.find((fly) => fly.id === this.population.selectedId)!.frame);
+    this.container.dataset.population = String(message.flies.length);
+    this.container.dataset.selectedFly = this.population.selectedId;
   }
 
-  setRunning(running: boolean): void {
-    this.running = running;
+  setRunning(running: boolean): void { this.running = running; }
+  setVisible(visible: boolean): void { this.visible = visible; this.lastTime = 0; }
+  showOverview(): void { this.cameraRig.overview(); this.population.render(1, false); }
+  focusFly(): void { if (this.population.selected) this.cameraRig.focusFly(this.population.selected.position); this.population.render(1, false); }
+  showEyeView(): void {
+    const fly = this.population.selected;
+    if (fly) this.cameraRig.eyeView(fly.position, fly.rotation.y, this.population.selectedEye);
+    this.population.render(1, true);
   }
-
-  setVisible(visible: boolean): void {
-    this.visible = visible;
-    if (visible && !this.animationFrame) this.render();
-  }
-
   resize(): void {
-    const width = Math.max(1, this.container.clientWidth);
-    const height = Math.max(1, this.container.clientHeight);
-    const aspect = width / height;
-    this.camera.left = (-CHAMBER_HEIGHT * aspect) / 2;
-    this.camera.right = (CHAMBER_HEIGHT * aspect) / 2;
-    this.camera.top = CHAMBER_HEIGHT / 2;
-    this.camera.bottom = -CHAMBER_HEIGHT / 2;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height, false);
+    const width = Math.max(1, this.container.clientWidth), height = Math.max(1, this.container.clientHeight);
+    this.cameraRig.resize(width / height); this.renderer.setSize(width, height, false);
+  }
+  async dispose(): Promise<void> {
+    if (this.disposed) return;
+    this.disposed = true; this.resizeObserver.disconnect(); this.cameraRig.dispose();
+    await this.renderer.setAnimationLoop(null);
+    this.population.dispose(); disposeScene(this.scene);
+    this.renderer.domElement.remove(); await this.renderer.dispose();
   }
 
-  private composeScene(): void {
-    this.scene.background = new THREE.Color("#070b0f");
-    this.scene.fog = new THREE.Fog("#070b0f", 15, 32);
-    this.camera.position.set(0, 16, 11);
-    this.camera.lookAt(0, 0, 0);
-    this.scene.add(new THREE.HemisphereLight("#9ce8e3", "#071016", 1.2));
-    const key = new THREE.DirectionalLight("#d9ffff", 2.4);
-    key.position.set(-6, 12, 4);
-    key.castShadow = true;
-    this.scene.add(key);
-    this.scene.add(createChamber(), this.fly.group, this.food, this.odor, this.trail, this.neural.group);
-  }
-
-  private updateFood(frame: FrameMessage): void {
-    this.food.visible = frame.food !== null;
-    this.odor.visible = frame.food !== null;
-    if (!frame.food) return;
-    const point = worldToScene(frame.food.x, frame.food.y, this.world.width, this.world.height);
-    this.food.position.set(point.x, 0.35, point.z);
-    this.odor.position.set(point.x, 0.025, point.z);
-    const sensory = Math.max(frame.sensory.smell_left, frame.sensory.smell_right);
-    const scale = odorHaloScale(sensory);
-    this.odor.scale.setScalar(scale);
-  }
-
-  private updateTrail(points: [number, number][]): void {
+  private updateSelected(frame: FrameMessage): void {
+    this.food.visible = frame.food !== null; this.odor.visible = frame.food !== null;
+    if (frame.food) {
+      const point = worldToScene(frame.food.x, frame.food.y, this.world.width, this.world.height);
+      const ground = Math.abs(point.x) <= 10 && Math.abs(point.z) <= 6 ? 0 : -1.3;
+      this.food.position.set(point.x, ground, point.z); this.food.scale.setScalar(frame.food.radius);
+      this.odor.position.set(point.x, ground + 0.02, point.z);
+      this.odor.scale.setScalar(odorHaloScale(Math.max(frame.sensory.smell_left, frame.sensory.smell_right)));
+    }
     const positions = this.trail.geometry.getAttribute("position") as THREE.BufferAttribute;
-    const count = Math.min(points.length, 80);
-    for (let index = 0; index < count; index += 1) {
-      const point = points[points.length - count + index];
-      if (!point) continue;
-      const scenePoint = worldToScene(point[0], point[1], this.world.width, this.world.height);
-      positions.setXYZ(index, scenePoint.x, 0.045, scenePoint.z);
-    }
-    positions.needsUpdate = true;
-    this.trail.geometry.setDrawRange(0, count);
+    frame.trail.forEach(([x, y], index) => { const point = worldToScene(x, y, this.world.width, this.world.height); positions.setXYZ(index, point.x, 0.032, point.z); });
+    positions.needsUpdate = true; this.trail.geometry.setDrawRange(0, frame.trail.length);
   }
 
-  private updateNeuralHalo(frame: FrameMessage): void {
-    const activity = frame.neural.active.slice(0, MAX_NEURAL_PARTICLES);
-    const matrix = new THREE.Matrix4();
-    for (let index = 0; index < MAX_NEURAL_PARTICLES; index += 1) {
-      const value = activity[index]?.activity ?? 0;
-      const base = this.neural.positions[index];
-      if (!base) continue;
-      matrix.compose(base, new THREE.Quaternion(), new THREE.Vector3().setScalar(value ? 0.35 + value : 0));
-      this.neural.mesh.setMatrixAt(index, matrix);
-    }
-    this.neural.mesh.instanceMatrix.needsUpdate = true;
-    this.neural.group.position.copy(this.targetPosition);
-    this.neural.material.emissiveIntensity = 0.8 + neuralIntensity(activity.map((item) => item.activity)) * 2.2;
+  private render(time: number): void {
+    if (this.disposed || !this.visible) return;
+    const dt = this.lastTime ? Math.min((time - this.lastTime) / 1000, 0.1) : 0;
+    this.lastTime = time;
+    this.population.render(this.motionPreference.matches || !this.running ? 1 : 1 - Math.exp(-14 * dt), this.cameraRig.mode === "eye");
+    const fly = this.population.selected;
+    if (fly) this.cameraRig.update(fly.position, fly.rotation.y, this.cameraRig.mode === "eye" ? this.population.selectedEye : undefined);
+    this.renderer.render(this.scene, this.cameraRig.camera);
   }
-
-  private render = (): void => {
-    if (!this.visible) {
-      this.animationFrame = 0;
-      return;
-    }
-    const elapsed = this.clock.getElapsedTime();
-    const amount = this.reducedMotion ? 1 : 0.14;
-    this.fly.group.position.lerp(this.targetPosition, amount);
-    this.fly.group.rotation.y = interpolateHeading(this.fly.group.rotation.y, this.targetHeading, amount);
-    const cameraX = cameraFocusX(
-      this.targetPosition.x,
-      this.camera.right - this.camera.left,
-      20,
-    );
-    this.camera.position.x = THREE.MathUtils.lerp(this.camera.position.x, cameraX, amount);
-    this.camera.lookAt(this.camera.position.x, 0, 0);
-    if (!this.reducedMotion && this.running) {
-      const flutter = Math.sin(elapsed * 32) * 0.22;
-      this.fly.leftWing.rotation.x = -0.28 + flutter;
-      this.fly.rightWing.rotation.x = -0.28 - flutter;
-      this.neural.group.rotation.y = elapsed * 0.22;
-      this.odor.rotation.z = elapsed * 0.08;
-    }
-    this.renderer.render(this.scene, this.camera);
-    this.animationFrame = window.requestAnimationFrame(this.render);
-  };
 }

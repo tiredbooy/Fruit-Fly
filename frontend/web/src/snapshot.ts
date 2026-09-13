@@ -3,16 +3,20 @@ import type {
   ErrorMessage,
   FrameMessage,
   HelloMessage,
+  ExperimentHello,
   RunningMessage,
   ServerMessage,
 } from "./types";
 
-type UnknownRecord = Record<string, unknown>;
+import { asRecord, asNumber, asInteger, asBoolean, asString, exactKeys, field, parseNumbers, type UnknownRecord } from "./snapshot-values";
+import { parseGymFrame, parseGymHello, parsePopulation } from "./gym-snapshot";
 
 export function parseServerMessage(value: unknown): ServerMessage {
   const message = asRecord(value, "message");
   const type = asString(field(message, "type"), "type");
-  if (type === "hello") return parseHello(message);
+  if (type === "hello") return message.schema === 2 || message.schema === 3 ? parseGymHello(message, parseHello) : parseHello(message);
+  if (type === "gym_frame") return parseGymFrame(message, parseFrame);
+  if (type === "population") return parsePopulation(message);
   if (type === "frame") return parseFrame(message);
   if (type === "running") return parseRunning(message);
   if (type === "error") return parseError(message);
@@ -28,7 +32,7 @@ export function formatReading(value: number): string {
   return value.toFixed(3);
 }
 
-function parseHello(message: UnknownRecord): HelloMessage {
+function parseHello(message: UnknownRecord): ExperimentHello {
   exactKeys(message, ["type", "schema", "backend", "dataset", "fps", "world"]);
   const schema = asNumber(field(message, "schema"), "schema");
   if (schema !== 1) throw new Error("Incompatible telemetry schema");
@@ -147,59 +151,4 @@ function parseError(message: UnknownRecord): ErrorMessage {
     code: asString(field(message, "code"), "code"),
     message: asString(field(message, "message"), "message"),
   };
-}
-
-function parseNumbers<K extends string>(
-  value: unknown,
-  keys: readonly K[],
-  label: string,
-): Record<K, number> {
-  const record = asRecord(value, label);
-  exactKeys(record, keys);
-  return Object.fromEntries(
-    keys.map((key) => [key, asNumber(field(record, key), `${label}.${key}`)]),
-  ) as Record<K, number>;
-}
-
-function asRecord(value: unknown, label: string): UnknownRecord {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    throw new Error(`${label} must be an object`);
-  }
-  return value as UnknownRecord;
-}
-
-function field(record: UnknownRecord, key: string): unknown {
-  if (!Object.hasOwn(record, key)) throw new Error(`Missing ${key}`);
-  return record[key];
-}
-
-function exactKeys(record: UnknownRecord, expected: readonly string[]): void {
-  const actual = Object.keys(record).sort();
-  const required = [...expected].sort();
-  if (actual.length !== required.length || actual.some((key, index) => key !== required[index])) {
-    throw new Error("Message fields do not match the schema");
-  }
-}
-
-function asNumber(value: unknown, label: string): number {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
-    throw new Error(`${label} must be finite`);
-  }
-  return value;
-}
-
-function asInteger(value: unknown, label: string): number {
-  const number = asNumber(value, label);
-  if (!Number.isSafeInteger(number)) throw new Error(`${label} must be an integer`);
-  return number;
-}
-
-function asString(value: unknown, label: string): string {
-  if (typeof value !== "string") throw new Error(`${label} must be text`);
-  return value;
-}
-
-function asBoolean(value: unknown, label: string): boolean {
-  if (typeof value !== "boolean") throw new Error(`${label} must be boolean`);
-  return value;
 }

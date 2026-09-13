@@ -1,3 +1,4 @@
+import cProfile
 import unittest
 
 from brain.network import ConnectomeNetwork, RuntimeCircuit, RuntimeEdge, RuntimeNode
@@ -41,6 +42,18 @@ class ConnectomeNetworkTest(unittest.TestCase):
 
         self.assertGreater(high[1], low[1])
         self.assertGreater(low[1], 0.0)
+
+    def test_steps_do_not_repeat_static_weight_logarithms(self) -> None:
+        profile = cProfile.Profile()
+        with profile:
+            self.network.step({1: 0.6})
+            self.network.step({1: 0.4})
+
+        logarithms = sum(
+            entry.callcount for entry in profile.getstats()
+            if isinstance(entry.code, str) and "math.log1p" in entry.code
+        )
+        self.assertEqual(0, logarithms)
 
 
 if __name__ == "__main__":

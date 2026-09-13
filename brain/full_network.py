@@ -11,8 +11,11 @@ from brain.network import RuntimeCircuit
 from simulation.signals import NeuralSnapshot
 
 
+MAX_VISIBLE_NEURONS = 128
+
+
 class FullConnectomeNetwork:
-    """Leaky synchronous dynamics backed by a memory-mapped SciPy CSR matrix."""
+    """Full sparse dynamics with at most 128 interface-first telemetry records."""
 
     def __init__(
         self,
@@ -37,7 +40,6 @@ class FullConnectomeNetwork:
         )
         self._activity = np.zeros(graph.metadata.neuron_count, dtype=np.float32)
         self._leak = np.float32(leak)
-        self._telemetry_limit = telemetry_limit
         self._labels = {
             node.body_id: f"{node.type or 'untyped'}#{node.body_id}"
             for node in circuit.nodes
@@ -50,6 +52,11 @@ class FullConnectomeNetwork:
             for body_ids in circuit.sensory_inputs.values()
             for body_id in body_ids
         } | set(circuit.motor_roles.values())
+        if len(interface_ids) > MAX_VISIBLE_NEURONS:
+            raise DataIntegrityError(
+                f"Runtime interface exceeds the {MAX_VISIBLE_NEURONS}-neuron telemetry capacity"
+            )
+        self._telemetry_limit = min(telemetry_limit, MAX_VISIBLE_NEURONS - len(interface_ids))
         self._interface_indices = self._indices_for(interface_ids)
         self._motor_indices = {
             role: int(self._indices_for((body_id,))[0])
@@ -106,12 +113,14 @@ class FullConnectomeNetwork:
 
     def _visible_indices(self) -> np.ndarray:
         active = np.flatnonzero(self._activity > 0.0)
+        active = active[~np.isin(active, self._interface_indices)]
         if self._telemetry_limit and len(active) > self._telemetry_limit:
-            selected = np.argpartition(
-                self._activity[active],
-                -self._telemetry_limit,
-            )[-self._telemetry_limit :]
-            active = active[selected]
+            rates = self._activity[active]
+            cutoff = np.partition(rates, -self._telemetry_limit)[-self._telemetry_limit]
+            strongest = active[rates > cutoff]
+            # Graph indices follow ascending official IDs; equal rates prefer smaller IDs.
+            ties = active[rates == cutoff][:self._telemetry_limit - len(strongest)]
+            active = np.concatenate((strongest, ties))
         elif self._telemetry_limit == 0:
             active = np.empty(0, dtype=np.int64)
         return np.unique(np.concatenate((self._interface_indices, active)))

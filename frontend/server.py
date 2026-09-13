@@ -48,6 +48,7 @@ class ObservatoryServer:
         self.persist_memory = persist_memory
         self.running = True
         self._clients: set[web.WebSocketResponse] = set()
+        self._latest_frame: dict[str, object] | None = None
 
     async def health(self, request: web.Request) -> web.Response:
         return web.json_response(
@@ -73,15 +74,11 @@ class ObservatoryServer:
         socket = web.WebSocketResponse(max_msg_size=1_024, heartbeat=30.0)
         await socket.prepare(request)
         self._clients.add(socket)
-        await socket.send_json(
-            hello_message(
-                backend=self.config.backend,
-                dataset=self.config.dataset,
-                fps=self.config.fps,
-                world_width=self.simulation.environment.width,
-                world_height=self.simulation.environment.height,
-            )
-        )
+        await socket.send_json(self._hello_message())
+        await socket.send_json({"type": "running", "running": self.running})
+        await self._send_additional_initial_state(socket)
+        if self._latest_frame is not None:
+            await socket.send_json(self._latest_frame)
         try:
             async for message in socket:
                 if message.type is WSMsgType.TEXT:
@@ -93,6 +90,18 @@ class ObservatoryServer:
         finally:
             self._clients.discard(socket)
         return socket
+
+    def _hello_message(self) -> dict[str, object]:
+        return hello_message(
+                backend=self.config.backend,
+                dataset=self.config.dataset,
+                fps=self.config.fps,
+                world_width=self.simulation.environment.width,
+                world_height=self.simulation.environment.height,
+        )
+
+    async def _send_additional_initial_state(self, socket: web.WebSocketResponse) -> None:
+        pass
 
     async def clock(self) -> None:
         loop = asyncio.get_running_loop()
@@ -106,7 +115,8 @@ class ObservatoryServer:
             frame = self.simulation.step(interval)
             if frame.learning.changed and self.persist_memory is not None:
                 self.persist_memory()
-            await self._broadcast(frame_message(frame))
+            self._latest_frame = frame_message(frame)
+            await self._broadcast(self._latest_frame)
             deadline += interval
             if deadline < loop.time() - interval:
                 deadline = loop.time() + interval
@@ -144,7 +154,11 @@ class ObservatoryServer:
             if socket.closed:
                 self._clients.discard(socket)
                 continue
-            await socket.send_json(message)
+            try:
+                await socket.send_json(message)
+            except (ConnectionResetError, BrokenPipeError):
+                # A peer may disconnect after the closed check while the send yields.
+                self._clients.discard(socket)
 
 
 def create_app(
@@ -152,12 +166,13 @@ def create_app(
     simulation: Simulation,
     config: ObservatoryConfig,
     persist_memory: Callable[[], None] | None = None,
+    server_type: type[ObservatoryServer] = ObservatoryServer,
 ) -> web.Application:
     index = config.dist_path / "index.html"
     if not index.is_file():
         raise FileNotFoundError("Browser assets are missing; run 'make frontend-build' first")
 
-    server = ObservatoryServer(simulation, config, persist_memory)
+    server = server_type(simulation, config, persist_memory)
     app = web.Application(client_max_size=1_024)
     app.router.add_get("/health", server.health)
     app.router.add_get("/ws", server.websocket)

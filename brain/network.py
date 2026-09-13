@@ -107,16 +107,29 @@ class ConnectomeNetwork:
         self._incoming_scale: dict[int, float] = {}
         for edge in circuit.edges:
             self._incoming_scale[edge.body_post] = self._incoming_scale.get(edge.body_post, 0.0) + math.log1p(edge.weight)
+        # Frozen circuit edges keep the same normalization and order for every step.
+        self._normalized_edges = tuple(
+            (
+                edge.body_pre,
+                edge.body_post,
+                math.log1p(edge.weight) / self._incoming_scale[edge.body_post],
+                self._sign[edge.body_pre],
+            )
+            for edge in circuit.edges
+        )
+        self._labels = {
+            node.body_id: f"{node.type or 'untyped'}#{node.body_id}"
+            for node in circuit.nodes
+        }
 
     def step(self, external: dict[int, float], *, substeps: int = 5) -> NeuralSnapshot:
         for _ in range(substeps):
             currents = {body_id: 0.0 for body_id in self._activity}
-            for edge in self.circuit.edges:
-                normalized_weight = math.log1p(edge.weight) / self._incoming_scale[edge.body_post]
-                currents[edge.body_post] += (
-                    self._activity[edge.body_pre]
+            for body_pre, body_post, normalized_weight, sign in self._normalized_edges:
+                currents[body_post] += (
+                    self._activity[body_pre]
                     * normalized_weight
-                    * self._sign[edge.body_pre]
+                    * sign
                 )
             next_activity = {}
             for body_id, previous in self._activity.items():
@@ -131,8 +144,4 @@ class ConnectomeNetwork:
             role: self._activity.get(body_id, 0.0)
             for role, body_id in self.circuit.motor_roles.items()
         }
-        labels = {
-            node.body_id: f"{node.type or 'untyped'}#{node.body_id}"
-            for node in self.circuit.nodes
-        }
-        return NeuralSnapshot(dict(self._activity), role_activity, labels)
+        return NeuralSnapshot(dict(self._activity), role_activity, dict(self._labels))

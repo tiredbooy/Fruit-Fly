@@ -1,4 +1,8 @@
-export interface HelloMessage {
+import type { GymHello, GymFrame, PopulationMessage } from "./gym-types";
+
+export type HelloMessage = ExperimentHello | GymHello;
+
+export interface ExperimentHello {
   type: "hello";
   schema: 1;
   backend: "compact" | "full";
@@ -54,5 +58,5 @@ export interface ErrorMessage {
   message: string;
 }
 
-export type ServerMessage = HelloMessage | FrameMessage | RunningMessage | ErrorMessage;
+export type ServerMessage = HelloMessage | FrameMessage | RunningMessage | ErrorMessage | GymFrame | PopulationMessage;
 export type ConnectionState = "connecting" | "open" | "reconnecting" | "incompatible";

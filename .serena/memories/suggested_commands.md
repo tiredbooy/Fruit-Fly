@@ -1,4 +1,8 @@
 # Commands
+- `make gym FLIES=3`: build and serve Experiment 2 (1-10 flies, compact only).
+- `make gym-run FLIES=3`: finite headless gym; memory in data/runs/experiment-002/.
+- `make gym-build`: regenerate validated official DM2 gym runtime/learning circuits.
+- `.venv/bin/python -B scripts/export_neuron_positions.py`: export verified measured somata.
 - `make run`: animated Experiment 1 using persistent memory.
 - `make run-fresh`: archive existing memory to .bak and start clean.
 - `make test`: complete unittest suite.
@@ -10,6 +14,7 @@
 - `make web`: build and serve the Persian Three.js observatory at http://127.0.0.1:8000.
 - `make web-full`: build and serve the observatory with all 166,606 valid bodies.
 - `make frontend-build`: install locked Bun packages, type-check, and build browser assets.
+- `make frontend-test`: test the actual fly asset, perspective fitting, and telemetry parser.
 - `make help`: concise command list.
 - Direct finite smoke: `.venv/bin/python -B main.py run --steps 600 --fps 30 --memory-file /tmp/flybrain-memory.json`.
 - Default memory path: data/runs/experiment-001-memory.json.

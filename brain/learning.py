@@ -33,6 +33,8 @@ class LearningCircuit:
     plastic_edges: tuple[LearningEdge, ...]
     orn_pn_edges: tuple[LearningEdge, ...] = ()
     model: str = "pam01-kc-mbon01-v1"
+    projection_type: str = "DM1_lPN"
+    odor_type: str = "ORN_DM1"
 
     @classmethod
     def from_json(
@@ -59,6 +61,8 @@ class LearningCircuit:
             pn_kc_edges=_read_edges(document["pn_kc_edges"]),
             plastic_edges=_read_edges(document["plastic_edges"]),
             model=str(document["model"]),
+            projection_type=str(document.get("projection_type", "DM1_lPN")),
+            odor_type=str(document.get("odor_type", "ORN_DM1")),
         )
         expected_count = int(document["selection"]["kenyon_cells_per_side"])
         circuit._validate(annotations, transmitters, expected_count)
@@ -76,11 +80,11 @@ class LearningCircuit:
         expected_count: int,
     ) -> None:
         if set(self.projection_neurons) != {"L", "R"}:
-            raise DataIntegrityError("Learning circuit requires bilateral DM1_lPN neurons")
+            raise DataIntegrityError("Learning circuit requires bilateral projection neurons")
         if set(self.mbon01_neurons) != {"L", "R"}:
             raise DataIntegrityError("Learning circuit requires bilateral MBON01 neurons")
         for side, body_id in self.projection_neurons.items():
-            _require_annotation(annotations, body_id, "DM1_lPN", side=side)
+            _require_annotation(annotations, body_id, self.projection_type, side=side)
             transmitters.require_call(body_id, "acetylcholine")
         for side, body_id in self.mbon01_neurons.items():
             _require_annotation(annotations, body_id, "MBON01", neuron_class="MBON", side=side)
@@ -105,11 +109,11 @@ class LearningCircuit:
         projection_ids = set(self.projection_neurons.values())
         mbon_ids = set(self.mbon01_neurons.values())
         if any(edge.body_post not in projection_ids for edge in self.orn_pn_edges):
-            raise DataIntegrityError("ORN edge does not terminate at a selected DM1_lPN")
+            raise DataIntegrityError("ORN edge does not terminate at a selected projection neuron")
         for edge in self.orn_pn_edges:
-            _require_annotation(annotations, edge.body_pre, "ORN_DM1")
+            _require_annotation(annotations, edge.body_pre, self.odor_type)
         if any(edge.body_pre not in projection_ids for edge in self.pn_kc_edges):
-            raise DataIntegrityError("Kenyon edge does not originate at a selected DM1_lPN")
+            raise DataIntegrityError("Kenyon edge does not originate at a selected projection neuron")
         if any(edge.body_pre not in kc_ids or edge.body_post not in mbon_ids for edge in self.plastic_edges):
             raise DataIntegrityError("Plastic edge is not a selected KC-to-MBON01 connection")
         plastic_kcs = {edge.body_pre for edge in self.plastic_edges}

@@ -1,0 +1,12 @@
+{
+  "source_project": "fly-escape",
+  "source_path": "assets/fly/fly.glb",
+  "source_revision": "06540138d55127f87e69f8cca9982c4f1328be90",
+  "sha256": "2c7a3398c2b0f9fdae6f62351379b4ea5a01d7fcf6f3a1d582d4c5106ab75b57",
+  "permission": "User explicitly authorized reuse from their local project on 2026-09-13; no public redistribution license was supplied",
+  "authored_sources": ["assets/fly/author.py", "assets/fly/animate.py"],
+  "clips": ["Walk", "Fly", "Land", "Feed"],
+  "used_clips": ["Walk", "Feed"],
+  "transform": "Unmodified GLB. Independent cloned rigs; rotate +90 degrees around Y; uniform display scale to 2.2 units along native Z. Root position and heading only from Python.",
+  "limitations": "Stylized authored geometry and gait, not measured locomotor biomechanics. Fly/Land clips are retained but not played without physical flight state."
+}

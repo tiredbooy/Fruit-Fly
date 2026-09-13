@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 
 import numpy as np
 
@@ -91,6 +92,49 @@ class FullConnectomeNetworkTest(unittest.TestCase):
 
         with self.assertRaisesRegex(DataIntegrityError, "999"):
             full.step({999: 1.0})
+
+    def test_total_telemetry_budget_retains_all_interfaces_and_strongest_extras(self) -> None:
+        graph, circuit = self._large_observation_fixture()
+        full = FullConnectomeNetwork(graph, circuit)
+        snapshot = full.step({body_id: body_id / 200 for body_id in range(75, 200)}, substeps=1)
+
+        self.assertEqual(128, len(snapshot.activity_by_body))
+        self.assertEqual(set(range(75)) | set(range(147, 200)), set(snapshot.activity_by_body))
+        self.assertTrue(all(snapshot.activity_by_body[body_id] == 0 for body_id in range(75)))
+
+    def test_equal_activity_extras_prefer_lowest_body_ids(self) -> None:
+        graph, circuit = self._large_observation_fixture()
+        full = FullConnectomeNetwork(graph, circuit)
+        snapshot = full.step({body_id: .5 for body_id in range(75, 200)}, substeps=1)
+
+        self.assertEqual(set(range(128)), set(snapshot.activity_by_body))
+
+    def test_configured_extra_limit_and_zero_preserve_the_interface(self) -> None:
+        graph, circuit = self._large_observation_fixture()
+        for limit, extras in ((0, set()), (2, {198, 199}), (1000, set(range(147, 200)))):
+            with self.subTest(limit=limit):
+                full = FullConnectomeNetwork(graph, circuit, telemetry_limit=limit)
+                snapshot = full.step({body_id: body_id / 200 for body_id in range(75, 200)}, substeps=1)
+                self.assertEqual(set(range(75)) | extras, set(snapshot.activity_by_body))
+
+    def test_interface_exceeding_wire_budget_is_explicitly_rejected(self) -> None:
+        graph, circuit = self._large_observation_fixture()
+        circuit = replace(circuit, sensory_inputs={'smell_left': tuple(range(129))})
+
+        with self.assertRaisesRegex(DataIntegrityError, '128'):
+            FullConnectomeNetwork(graph, circuit)
+
+    def _large_observation_fixture(self) -> tuple[FullGraph, RuntimeCircuit]:
+        graph = replace(self.graph,
+            metadata=replace(self.graph.metadata, neuron_count=200, connected_neuron_count=0, edge_count=0),
+            body_ids=np.arange(200, dtype=np.int64), indptr=np.zeros(201, dtype=np.int64),
+            indices=np.empty(0, dtype=np.int32), weights=np.empty(0, dtype=np.float32),
+            signs=np.ones(200, dtype=np.float32))
+        circuit = replace(self.circuit,
+            nodes=tuple(RuntimeNode(body_id, 'fixture', None, 'acetylcholine') for body_id in range(70)),
+            edges=(), sensory_inputs={'smell_left': (70, 71)},
+            motor_roles={'forward_left': 72, 'forward_right': 73, 'steering_low_left': 74})
+        return graph, circuit
 
 
 if __name__ == "__main__":

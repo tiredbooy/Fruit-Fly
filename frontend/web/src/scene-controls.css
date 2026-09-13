@@ -1,0 +1,115 @@
+.scene canvas {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.scene canvas:focus-visible {
+  outline: 2px solid var(--specimen-cyan);
+  outline-offset: -4px;
+}
+
+.scene-controls {
+  position: absolute;
+  z-index: 1;
+  inset: 14px 14px auto auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-controls button {
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--optical-line);
+  border-radius: 12px;
+  background: var(--chamber-black);
+  color: var(--paper-white);
+  cursor: pointer;
+}
+
+.scene-controls button:hover:not(:disabled) {
+  border-color: var(--specimen-cyan);
+}
+
+.scene-controls button[aria-pressed="true"] {
+  border-color: var(--specimen-cyan);
+  color: var(--chamber-black);
+  background: var(--specimen-cyan);
+}
+
+.scene-controls button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+#graphics-backend {
+  padding: 6px 8px;
+  color: var(--specimen-cyan);
+  background: var(--chamber-black);
+  font: 0.7rem ui-monospace, monospace;
+}
+
+.camera-instructions {
+  position: absolute;
+  inset: auto 14px 12px auto;
+  padding: 3px 8px;
+  color: var(--paper-white);
+  background: var(--chamber-black);
+  font-size: 0.65rem;
+  pointer-events: none;
+}
+
+.camera-approximation {
+  display: none;
+  position: absolute;
+  inset: auto 14px 12px auto;
+  padding: 4px 8px;
+  color: var(--paper-white);
+  background: var(--chamber-black);
+  font-size: 0.65rem;
+  pointer-events: none;
+}
+
+.scene[data-camera-mode="eye"] .camera-instructions {
+  display: none;
+}
+
+.scene[data-camera-mode="eye"] .camera-approximation {
+  display: block;
+}
+
+.model-credit {
+  max-width: 75%;
+}
+
+.model-credit summary {
+  cursor: pointer;
+  color: var(--paper-white);
+}
+
+.model-credit p {
+  margin-block: 8px;
+}
+
+.model-credit a {
+  margin-inline-end: 12px;
+  color: var(--specimen-cyan);
+}
+
+@media (max-width: 560px) {
+  .scene-controls {
+    inset-inline: 8px;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .scene-controls button {
+    font-size: 0.75rem;
+    padding-inline: 9px;
+  }
+
+  .camera-instructions {
+    font-size: 0.59rem;
+  }
+}

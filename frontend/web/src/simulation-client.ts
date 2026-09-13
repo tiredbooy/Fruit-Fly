@@ -1,5 +1,6 @@
 import { parseServerMessage } from "./snapshot";
 import type { ConnectionState, FrameMessage, HelloMessage, ServerMessage } from "./types";
+import type { GymFrame } from "./gym-types";
 
 interface SimulationClientEvents {
   onConnection(state: ConnectionState): void;
@@ -7,6 +8,8 @@ interface SimulationClientEvents {
   onFrame(message: FrameMessage): void;
   onRunning(running: boolean): void;
   onError(code: string): void;
+  onGymFrame?(message: GymFrame): void;
+  onPopulation?(count: number): void;
 }
 
 export class SimulationClient {
@@ -31,6 +34,11 @@ export class SimulationClient {
   setRunning(running: boolean): void {
     if (this.socket?.readyState !== WebSocket.OPEN) return;
     this.socket.send(JSON.stringify({ type: "set_running", running }));
+  }
+
+  setPopulation(count: number): void {
+    if (this.socket?.readyState !== WebSocket.OPEN) return;
+    this.socket.send(JSON.stringify({type: "set_population", count}));
   }
 
   disconnect(): void {
@@ -59,6 +67,8 @@ export class SimulationClient {
   private dispatch(message: ServerMessage): void {
     if (message.type === "hello") this.events.onHello(message);
     if (message.type === "frame") this.events.onFrame(message);
+    if (message.type === "gym_frame") this.events.onGymFrame?.(message);
+    if (message.type === "population") this.events.onPopulation?.(message.count);
     if (message.type === "running") this.events.onRunning(message.running);
     if (message.type === "error") this.events.onError(message.code);
   }

@@ -1,4 +1,5 @@
-import { formatBodyId, formatReading } from "./snapshot";
+import { NeuronInspector } from "./neuron-inspector";
+import { formatReading } from "./snapshot";
 import type { ConnectionState, FrameMessage, HelloMessage } from "./types";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -28,18 +29,19 @@ interface DashboardElements {
   association: HTMLOutputElement;
   memoryState: HTMLElement;
   roles: HTMLElement;
-  activeCount: HTMLElement;
-  activeNeurons: HTMLOListElement;
   announcer: HTMLElement;
   sceneLoading: HTMLElement;
 }
 
 export class Dashboard {
   private readonly elements: DashboardElements;
+  private readonly neuronInspector: NeuronInspector;
   private running = true;
+  private readonly roleValues = new Map<string, HTMLElement>();
 
   constructor(documentRoot: Document, onRunningChange: (running: boolean) => void) {
     this.elements = elements(documentRoot);
+    this.neuronInspector = new NeuronInspector(documentRoot);
     this.elements.runningToggle.addEventListener("click", () => {
       onRunningChange(!this.running);
     });
@@ -47,8 +49,13 @@ export class Dashboard {
 
   updateHello(message: HelloMessage): void {
     this.elements.backend.textContent =
-      message.backend === "full" ? "FULL · 166,606" : "COMPACT · 66 EDGES";
+      message.schema !== 1 ? "GYM · COMPACT" : message.backend === "full" ? "FULL · 166,606" : "COMPACT · 66 EDGES";
+  }
+
+  setSceneReady(backend: string): void {
     this.elements.sceneLoading.hidden = true;
+    required(document, "graphics-backend").textContent = backend;
+    document.querySelectorAll<HTMLButtonElement>(".scene-controls button").forEach((button) => { button.disabled = false; });
   }
 
   updateFrame(frame: FrameMessage): void {
@@ -73,7 +80,7 @@ export class Dashboard {
     );
     this.elements.memoryState.textContent = frame.learning.changed ? "UPDATED" : "STABLE";
     this.updateRoles(frame.neural.roles);
-    this.updateActiveNeurons(frame);
+    this.neuronInspector.update(frame);
   }
 
   setConnection(state: ConnectionState): void {
@@ -99,7 +106,9 @@ export class Dashboard {
 
   showWebGlError(): void {
     this.elements.sceneLoading.hidden = false;
-    this.elements.sceneLoading.textContent = "نمای سه‌بعدی در دسترس نیست؛ اطلاعات زنده همچنان فعال است.";
+    this.elements.sceneLoading.textContent = "نمای سه‌بعدی بارگذاری نشد؛ صفحه را تازه کنید.";
+    required(document, "graphics-backend").textContent = "نمای سه‌بعدی قطع است";
+    document.querySelectorAll<HTMLButtonElement>(".scene-controls button").forEach((button) => { button.disabled = true; });
   }
 
   showCommandError(): void {
@@ -107,47 +116,21 @@ export class Dashboard {
   }
 
   private updateRoles(roles: Record<string, number>): void {
-    this.elements.roles.replaceChildren(
-      ...Object.entries(ROLE_LABELS).flatMap(([role, label]) => {
-        const term = document.createElement("dt");
+    for (const [role, label] of Object.entries(ROLE_LABELS)) {
+      let value = this.roleValues.get(role);
+      if (!value) {
+        const term = this.elements.roles.ownerDocument.createElement("dt");
         term.textContent = label;
-        const value = document.createElement("dd");
-        value.textContent = formatReading(roles[role] ?? 0);
+        value = this.elements.roles.ownerDocument.createElement("dd");
         value.dir = "ltr";
-        return [term, value];
-      }),
-    );
+        this.elements.roles.append(term,value);
+        this.roleValues.set(role,value);
+      }
+      const reading = formatReading(roles[role] ?? 0);
+      if (value.textContent !== reading) value.textContent = reading;
+    }
   }
 
-  private updateActiveNeurons(frame: FrameMessage): void {
-    const active = frame.neural.active.filter((neuron) => neuron.activity > 0).slice(0, 6);
-    this.elements.activeCount.textContent = `${active.length} ACTIVE`;
-    if (!active.length) {
-      const empty = document.createElement("li");
-      empty.className = "empty-neurons";
-      empty.textContent = "هنوز فعالیتی ثبت نشده است.";
-      this.elements.activeNeurons.replaceChildren(empty);
-      return;
-    }
-    this.elements.activeNeurons.replaceChildren(
-      ...active.map((neuron) => {
-        const item = document.createElement("li");
-        item.className = "neuron-row";
-        const identity = document.createElement("span");
-        identity.className = "neuron-identity";
-        identity.textContent = neuron.label;
-        identity.dir = "ltr";
-        const bodyId = document.createElement("span");
-        bodyId.className = "neuron-id";
-        bodyId.textContent = formatBodyId(neuron.body_id);
-        const value = document.createElement("b");
-        value.textContent = formatReading(neuron.activity);
-        value.dir = "ltr";
-        item.append(identity, bodyId, value);
-        return item;
-      }),
-    );
-  }
 }
 
 function elements(root: Document): DashboardElements {
@@ -169,8 +152,6 @@ function elements(root: Document): DashboardElements {
     association: required(root, "association-value") as HTMLOutputElement,
     memoryState: required(root, "memory-state"),
     roles: required(root, "role-list"),
-    activeCount: required(root, "active-count"),
-    activeNeurons: required(root, "active-neurons") as HTMLOListElement,
     announcer: required(root, "announcer"),
     sceneLoading: required(root, "scene-loading"),
   };

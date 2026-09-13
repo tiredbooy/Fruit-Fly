@@ -102,9 +102,126 @@ and every command except `set_running` with a Boolean value. The browser parses
 the schema again before rendering, so incompatible telemetry stops visibly.
 
 The browser never imports Python domain objects and cannot send motor, sensor,
-food, hunger, reward, memory, or neural values. Three.js renders procedural body
-geometry, world position, food, odor strength, trail, and a symbolic neural halo.
-The Persian instrument panel remains usable if WebGL creation fails.
+food, hunger, reward, memory, or neural values. Three.js renders an authored
+skeletal fly, world position, food, odor strength, and a trail.
+The Persian instrument panel remains usable if graphics or model loading
+fails. Connecting observers receive the current running state and latest frame,
+including when the simulation is paused.
+
+`main.ts` opens telemetry before lazily loading `fly-scene.ts`. The scene awaits
+`WebGPURenderer.init()`, loads the local GLB, and compiles materials; the latest
+hello/frame/running values are replayed after initialization. Three.js falls back
+to WebGL2 when a WebGPU adapter cannot initialize, and the UI names the actual
+backend. Browser rendering never moves neural computation onto the GPU.
+
+Broadcast handles connection-reset/broken-pipe errors per observer, removes
+only the disconnected socket and continues the shared clock. A socket can close
+between the readiness check and the asynchronous send. Cancellation and
+serialization/programming errors are not swallowed as network disconnects.
+
+`scene-camera.ts` owns perspective orbit, zoom, overview, fly follow, and the
+head-height eye camera. Eye pose is derived only from rendered body position and
+heading, with orbit disabled until the observer exits eye mode. The selected
+body mesh is hidden in eye mode to avoid occlusion. This is
+not photoreceptor rendering and is not fed back to the Python vision sensors.
+`world-scene.ts` supplies arena solids and lighting. The X/Z ground plane maps
+the existing Python x/y coordinates; this is a 3D view of ground-walking physics,
+not flight or a new collision model. Camera actions cannot become motor input.
+
+`neuron-inspector.ts` renders the received `neural.active` records; the existing
+schema caps this collection at 128. `neuron-readings.ts` provides pure filtering
+and ordering without changing the frame. Labels and IDs come from telemetry;
+bar length is bounded while numeric readings retain small nonzero values. The
+positive-activity count is explicitly scoped to received records. No new neuron
+selection, invented connection, or whole-brain activity claim is introduced.
+
+The anatomical viewer joins received IDs to 139,659 measured soma locations
+exported from our pinned annotations, out of 166,606 eligible bodies. Missing
+positions are counted, never synthesized. A separate renderer shows unobserved,
+received-zero and received-positive points; no fabricated edges or spikes.
+The exact numeric list remains behind a disclosure. Both renderers can fail
+independently without stopping telemetry.
+
+The current authored rig is reused with the user's authorization from their
+fly-escape project. Only appearance and skeletal animation are reused; no brain,
+controller or anatomy dataset is copied. Its manifest records the source commit,
+checksum and absence of a supplied public redistribution license. Each fly has
+an independent skeleton/mixer, with shared geometry/materials. Actual cumulative
+displacement samples the walking clip; ingestion samples feeding. Neither can
+move the Python-owned body root. There is no flight state.
+
+The previous visual asset pipeline remains available separately:
+`scripts/build_fly_asset.py` verifies the licensed Zenodo archive and reduces
+four external CT surfaces into a locally served GLB. Its provenance manifest,
+attribution, and checksums are tracked beside the asset. The female surface is
+appearance only, not the male connectome specimen. See
+[observatory maintenance](frontend-observatory.md) and
+[decision 0004](decisions/0004-webgpu-ct-fly.md).
+
+## Experiment 2 gym boundary
+
+`experiments/experiment_002.py` composes `GymSimulation`, `Environment`, an
+`EquipmentFloor`, and one
+`GymBrainAdapter` per fly. The compact runtime adds validated DM2 cue paths to
+the preserved food/vision circuit. Food and synthetic gym odor have separate
+eligibility and KC-to-MBON memory. Mapping DM2 to the apparatus odor, resistance,
+fatigue, fitness and reward scale are explicit model assumptions, documented in
+[equipment science](science/equipment.md), with the original learning/lane model
+in [gym science](science/gym.md). No world code selects destinations or steers flies.
+
+Each neural interval (at most 0.1 seconds) advances the shared food schedule,
+samples each fly's real sensors, advances independent brains, and applies
+descending motor output. Contact with unoccupied equipment enables the model
+foreleg actuator; supported body pose and a loaded scalar joint are world state.
+Joint physics uses steps at most 0.01 seconds. Positive vertical displacement
+earns work; three full up/down strokes earn one set and a bounded reward. Partial
+strokes never earn sets. Default Experiment 2 enables a continuous-training
+apparatus: after a set, the occupied station racks its weight, retains the grip
+and support pose for two seconds, then permits another neurally driven set. The
+apparatus prevents locomotion while attached but never supplies lifting work.
+Physiology follows actual work, and reward modifies the eligibility preceding
+the physical outcome. Ground food cannot be ingested while a body is supported
+in an elevated equipment pose.
+
+`gym_cli.py` owns construction and storage. Each stable `fly-N` has separate
+food/gym memory under `data/runs/experiment-002/`; Experiment 1's file is untouched.
+All ten slots are validated at startup. Reducing count parks bodies and memory
+in a bounded bank; increasing restores them. Physiology/work counters restart
+with the process. Memory writes are atomic per file, not one cross-file transaction.
+
+`GymObservatoryServer` uses explicit schema 3 for articulated equipment without
+changing Experiment 1's schema 1. Its hello supplies station kinds, positions,
+headings, loads, travel, contact radius and population. A `gym_frame` wraps an
+unchanged schema-1 frame, training metrics and immutable `ExerciseSnapshot` for
+each active fly. The browser retains a schema-2 parser for older lane servers.
+The only new
+command is strict integer `set_population` (1-10), applied at the next clock
+boundary, even when paused. Applying, stepping and caching occur before any
+await; a request arriving during broadcast waits for the next boundary and its
+own acknowledgement. New clients receive current population and cached state.
+
+The browser count changes experiment setup, not behavior. Selecting a fly
+changes only the camera, anatomy and instruments. Station geometry comes from
+Python; there are no browser-only positions. The default physical grid exposes
+flies to ten alternating bench/curl stations initially, explicitly not evidence
+of learned gym seeking. Continuous station attendance is also imposed experiment
+setup, not a world-selected behavior. Reducing population releases an occupied
+station without reward and retains inactive body, neural, memory and recovery state.
+Gym full-connectome mode is rejected until separately calibrated and measured.
+
+`EquipmentScene` uses one authoritative stroke to position weights and derive
+grips. `ForelegPose` solves the authored two-segment forelegs to those grips;
+each fly has an independent skeleton. `AnimatedFly` applies received support
+posture without moving the physical root. Eye observation uses the rendered head
+and support orientation while attached. This observer remains distinct from
+the Python simple-vision input. Static apparatus meshes are merged by material.
+
+The compact network caches immutable normalized edge weights and labels but
+preserves original update order and returns independent snapshot dictionaries.
+The live inspector caches received-ID DOM rows and updates their exact values,
+reordering existing elements only when the activity order changes. Neither
+optimization drops neurons or changes rates; see [measured equivalence and
+timings](neural-performance-2026-09-13.md).
 
 ## Runtime circuits
 
@@ -138,8 +255,12 @@ not know which backend is active. `main.py run --brain full` selects the full
 backend explicitly; missing or stale artifacts stop with an instruction to run
 `make brain-build` rather than falling back to compact.
 
-Full-network telemetry retains every configured sensor/motor interface body and
-only the 64 strongest additional active bodies. This keeps the terminal and
+Full-network telemetry retains every configured interface body and fills the
+remaining 128-record budget with at most 64 strongest positive non-interface
+bodies. Equal rates use ascending body ID. The current 70-body interface leaves
+58 extra slots; configurations exceeding 128 interface bodies fail explicitly.
+This corrects an intermittent overflow in the earlier union-of-interface-and-top64
+selection without changing neural updates. It keeps the terminal and
 Python object allocation bounded while all 166,606 activities continue updating
 inside NumPy/SciPy arrays.
 

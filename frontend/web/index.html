@@ -45,22 +45,68 @@
               <span><b id="elapsed-value">0.0</b>s</span>
             </div>
           </div>
-          <div id="scene" class="scene" role="img" aria-label="نمای سه‌بعدی محفظه مگس">
-            <div id="scene-loading" class="scene-state">در حال دریافت وضعیت زنده…</div>
+          <div class="gym-toolbar">
+            <form id="population-form" hidden>
+              <label for="fly-count">تعداد مگس</label>
+              <input id="fly-count" name="count" type="number" min="1" max="10" step="1" value="1" required disabled aria-describedby="population-status" />
+              <button id="apply-population" type="submit" disabled>اعمال تعداد</button>
+              <span id="population-status" role="status"></span>
+            </form>
+            <div id="fly-picker" role="group" aria-label="انتخاب مگس برای مشاهده" hidden></div>
+          </div>
+          <div id="scene" class="scene" role="group" aria-label="نمای سه‌بعدی محفظه مگس" aria-describedby="camera-instructions">
+            <div id="scene-loading" class="scene-state" role="status">در حال بارگذاری مدل و گرافیک…</div>
+            <div class="scene-controls" role="group" aria-label="کنترل دوربین">
+              <button id="view-overview" type="button" aria-pressed="true" disabled>نمای محیط</button>
+              <button id="view-fly" type="button" aria-pressed="false" disabled>دنبال کردن مگس</button>
+              <button id="view-eye" type="button" aria-pressed="false" aria-describedby="camera-approximation" disabled>نمای چشم مگس</button>
+              <output id="graphics-backend" aria-label="موتور گرافیکی" dir="ltr">…</output>
+            </div>
+            <span id="camera-instructions" class="camera-instructions">چرخش: کشیدن · بزرگ‌نمایی: چرخ ماوس یا + و −</span>
+            <span id="camera-approximation" class="camera-approximation">دید دوربین تقریبی است، نه بینایی مرکب.</span>
           </div>
           <div class="scene-caption">
             <span id="food-state">در انتظار غذا</span>
-            <span>هاله عصبی نمادین است، نه نقشه آناتومیک.</span>
+            <details class="model-credit">
+              <summary>درباره مدل</summary>
+              <p>مدل مفصل‌دار از پروژه شما: <bdi>fly-escape</bdi></p>
+              <p>نمایش بزرگ‌شده؛ گام‌ها از جابه‌جایی واقعی، تغذیه از خوردن غذا.</p>
+              <p>ظاهر و گام‌برداری مدل‌سازی شده‌اند؛ اندازه‌گیری زیستی نیستند.</p>
+            </details>
           </div>
         </section>
 
         <aside class="instruments" aria-label="اندازه‌گیری‌های زنده">
+          <section id="training-instrument" class="instrument" hidden>
+            <div class="instrument-heading"><h2>ست‌های کامل</h2><span id="gym-sets" dir="ltr">0</span></div>
+            <div id="exercise-readings" class="exercise-readings" hidden>
+              <div class="exercise-status"><h3 id="exercise-name">حرکت آزاد</h3><span id="exercise-phase">در انتظار داده</span></div>
+              <div class="paired-reading"><span>تکرار کامل</span><output id="exercise-reps">۰</output></div>
+              <div class="paired-reading"><span>زمان بازیابی</span><output id="exercise-recovery" dir="ltr">—</output></div>
+            </div>
+            <div class="paired-reading"><label for="gym-progress">پیشرفت ست</label><span id="gym-progress-value">۰%</span></div>
+            <meter id="gym-progress" min="0" max="1" value="0">0</meter>
+            <div class="training-readings">
+              <div class="paired-reading"><span>تلاش</span><span id="gym-effort" dir="ltr">0</span></div>
+              <div class="paired-reading"><span>خستگی</span><span id="gym-fatigue" dir="ltr">0</span></div>
+              <div class="paired-reading"><span>توان نسبی</span><span id="gym-fitness" dir="ltr">1</span></div>
+              <div class="paired-reading"><span>پاداش ست</span><span id="gym-reward" dir="ltr">0</span></div>
+              <div class="paired-reading"><span>تداعی تمرین</span><span id="gym-association_strength" dir="ltr">0</span></div>
+            </div>
+            <svg id="training-curve" class="training-curve" viewBox="0 0 240 80" role="img" aria-label="روند اندازه‌گیری‌شده تداعی تمرین و خستگی، از صفر تا یک">
+              <path d="M8 8V72H232" class="curve-axis"/>
+              <polyline id="curve-association" points=""/>
+              <polyline id="curve-fatigue" points=""/>
+            </svg>
+            <div class="curve-legend"><span>تداعی تمرین</span><span>خستگی</span><span id="curve-range" dir="ltr">…</span></div>
+            <details class="training-note"><summary>درباره تمرین</summary><p>سه تکرار کامل یک ست است. نیرو از خروجی عصبی؛ حرکت و خستگی مدل‌سازی شده‌اند، نه زیست‌مکانیک واقعی.</p><p>پاداش نشانه احساس یا اعتیاد نیست.</p></details>
+          </section>
           <section class="instrument instrument-emphasis">
             <div class="instrument-heading">
               <h2>گرسنگی</h2>
               <output id="hunger-value" dir="ltr">0.000</output>
             </div>
-            <meter id="hunger-meter" min="0" max="1" value="0">0</meter>
+            <meter id="hunger-meter" aria-label="میزان گرسنگی" min="0" max="1" value="0">0</meter>
           </section>
 
           <section class="instrument">
@@ -120,14 +166,28 @@
         <section class="activity-ribbon" aria-labelledby="activity-title">
           <div class="activity-heading">
             <div>
-              <h2 id="activity-title">فعال‌ترین نورون‌ها</h2>
-              <p class="section-code">MEASURED ACTIVITY</p>
+              <h2 id="activity-title">نقشه نورونی</h2>
             </div>
-            <span id="active-count" class="activity-count" dir="ltr">0 ACTIVE</span>
+            <div class="neuron-tools">
+              <label class="neuron-search-control" for="neuron-search">
+                <span>جست‌وجو</span>
+                <input id="neuron-search" type="search" placeholder="نام یا شناسه" autocomplete="off" />
+              </label>
+              <span id="active-count" class="activity-count">در انتظار داده</span>
+            </div>
           </div>
-          <ol id="active-neurons" class="neuron-list">
-            <li class="empty-neurons">هنوز فعالیتی ثبت نشده است.</li>
-          </ol>
+          <div id="neuron-map" class="neuron-map" role="group" aria-label="مکان جسم سلولی نورون‌های MaleCNS">
+            <span id="anatomy-loading" class="anatomy-loading" role="status">در حال بارگذاری نقشه…</span>
+            <span id="anatomy-selection" class="anatomy-selection" dir="ltr"></span>
+          </div>
+          <div class="anatomy-footer">
+            <span id="anatomy-summary">مکان‌ها از داده‌های رسمی MaleCNS</span>
+            <div class="anatomy-legend"><span>فعال</span><span>صفر دریافتی</span><span>بدون خوانش</span></div>
+          </div>
+          <details class="neuron-details"><summary>خوانش‌های دقیق</summary><div class="neuron-results">
+            <p id="neuron-state" class="neuron-state" role="status">در انتظار داده‌های نورونی…</p>
+            <ol id="active-neurons" class="neuron-list"></ol>
+          </div></details>
         </section>
       </main>
     </div>
