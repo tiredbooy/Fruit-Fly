@@ -7,9 +7,9 @@ Status: approved for implementation
 
 Add a runnable full-connectome backend for MaleCNS v1.0 while preserving the
 existing Experiment 1 world, sensory adapters, motor adapter, learning memory,
-and compact backend. The full backend advances all 166,391 neurons that belong
-to the official connected neuron graph and all 25,563,426 directed edges between
-them.
+and compact backend. The full backend advances all 166,606 MaleCNS v1.0 neurons
+with a valid official superclass, including 166,400 connected neurons and 206
+isolated neurons, plus all 25,574,615 directed edges between valid neurons.
 
 This milestone does not implement the gym, poker, or Three.js. Those remain
 later milestones built on the full engine and its telemetry boundary.
@@ -26,12 +26,13 @@ The builder consumes the three checksum-pinned local assets already named in
 The neuron filter follows the MaleCNS publication's counting notebook: a neuron
 must have a non-empty `superclass` that does not contain `tbc`, and both endpoints
 of every retained edge must pass that filter. No connection-weight threshold is
-applied. The build must fail unless the result is exactly 166,391 connected
-neurons and 25,563,426 edges for `male-cns:v1.0`.
+applied. The build must fail unless the result is exactly 166,606 retained
+neurons, 166,400 connected neurons, and 25,574,615 edges for `male-cns:v1.0`.
 
-The published census contains 166,691 proofread neurons. The engine count is
-smaller because 300 neurons do not occur in the connected graph selected by the
-official graph-counting rule.
+The publication and its counting notebook describe the earlier v0.9 graph as
+166,691 proofread neurons and 166,391 connected neurons. Janelia documents minor
+proofreading and annotation refinements in v1.0. The checksum-pinned local v1.0
+tables are authoritative for this engine and produce the counts above.
 
 Body IDs, superclass/type/class annotations, transmitter calls, and structural
 weights remain data-derived. Rate dynamics, polarity interpretation, leak,
@@ -180,7 +181,8 @@ updates on the same small graph.
 Milestone acceptance requires:
 
 1. all existing tests pass;
-2. the real build produces 166,391 neurons and 25,563,426 edges;
+2. the real build produces 166,606 retained neurons, 166,400 connected neurons,
+   and 25,574,615 edges;
 3. `brain-status` validates the generated artifact and pinned inputs;
 4. a full-engine Experiment 1 smoke run reaches sensor-to-motor output;
 5. a benchmark is recorded in `docs/status.md`;

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build, validate, and run a CPU sparse neural engine containing the official 166,391 connected MaleCNS v1.0 neurons and 25,563,426 directed neuron-neuron edges.
+**Goal:** Build, validate, and run a CPU sparse neural engine containing all 166,606 valid-superclass MaleCNS v1.0 neurons and 25,574,615 directed neuron-neuron edges.
 
 **Architecture:** An offline builder filters the pinned Feather sources with the official valid-superclass rule and writes memory-mappable CSR arrays. A full-network backend implements the same neural protocol and rate equation as the existing compact backend, while CLI and Make targets select, validate, and benchmark it without changing world behavior.
 
@@ -13,7 +13,8 @@
 ## Global Constraints
 
 - Use only checksum-pinned `male-cns:v1.0` inputs already named by the source manifest.
-- Retain exactly 166,391 connected neurons and 25,563,426 edges with no weight threshold.
+- Retain exactly 166,606 valid-superclass neurons, including 166,400 connected
+  neurons, and 25,574,615 edges with no weight threshold.
 - Preserve official body IDs and document every dynamics or polarity assumption.
 - Keep `brain` and `world` mutually independent; `simulation` remains the orchestrator.
 - Do not add gym, poker, Bun, or Three.js code in this milestone.
@@ -126,8 +127,9 @@ git commit -m "feat: define full graph artifact contract"
 
 Build small Feather fixtures with valid, empty, and `tbc` superclasses; edges
 crossing valid/invalid endpoints; and ACh/GABA/glutamate/histamine/dopamine/
-missing transmitter calls. Assert that only valid-to-valid connected endpoints
-remain, IDs are sorted, and signs are `[+1, -1, -1, -1, 0, 0]` for those calls.
+missing transmitter calls. Assert that only valid-to-valid edges remain, every
+valid neuron including isolated neurons is retained, IDs are sorted, and signs
+are `[+1, -1, -1, -1, 0, 0]` for those calls.
 
 For two incoming edges of weights 3 and 7, assert stored magnitudes are:
 
@@ -148,17 +150,18 @@ Expected: import failure because `brain.full_graph_builder` does not exist.
 Define:
 
 ```python
-OFFICIAL_NEURON_COUNT = 166_391
-OFFICIAL_EDGE_COUNT = 25_563_426
+OFFICIAL_NEURON_COUNT = 166_606
+OFFICIAL_CONNECTED_NEURON_COUNT = 166_400
+OFFICIAL_EDGE_COUNT = 25_574_615
 FILTER_NAME = "valid-superclass-v1"
 POLARITY_POLICY = "ach-positive-gaba-glu-his-negative-modulators-zero-v1"
 DYNAMICS = "incoming-log1p-rate-v1"
 ```
 
 Read annotations, retain truthy `superclass` values excluding strings containing
-`tbc`, filter every edge batch with both endpoints in that set, then reduce body
-IDs to connected endpoints. Map IDs through `np.searchsorted` into sorted
-`int64` `body_ids`. Keep edge endpoint indexes as `int32`.
+`tbc`, and filter every edge batch with both endpoints in that set. Preserve all
+valid IDs, including isolated neurons. Map endpoints through `np.searchsorted`
+into sorted `int64` `body_ids`. Keep edge endpoint indexes as `int32`.
 
 - [ ] **Step 4: Implement transmitter signing and CSR generation**
 
@@ -241,7 +244,7 @@ Construct a SciPy CSR matrix without copying compatible arrays. Maintain one
 For each substep compute sparse matrix-vector current, clamp at zero, apply
 `np.tanh`, blend leak, and overwrite external indexes. Return motor roles plus
 the strongest 64 nonzero neurons in `activity_by_body`; do not materialize all
-166,391 entries as Python objects.
+166,606 entries as Python objects.
 
 - [ ] **Step 5: Run parity and existing network tests, then commit**
 
@@ -355,8 +358,9 @@ Expected final output:
 
 ```text
 Dataset: male-cns:v1.0
-Connected neurons: 166,391
-Neuron edges: 25,563,426
+Retained neurons: 166,606
+Connected neurons: 166,400
+Neuron edges: 25,574,615
 Status: full brain artifact ready
 ```
 
@@ -385,10 +389,11 @@ memory compatible with Experiment 1.
 
 - [ ] **Step 4: Update human and Serena documentation**
 
-Document exact commands and measured results. Explain the 166,691 census versus
-166,391 connected-engine count, the valid-superclass filter, transmitter policy,
-full/compact selection, compact telemetry, known biological limitations, and
-the fact that the next milestone is the fly gym rather than Three.js.
+Document exact commands and measured results. Explain the publication's v0.9
+counts versus the checksum-pinned v1.0 counts, the valid-superclass filter,
+transmitter policy, full/compact selection, compact telemetry, known biological
+limitations, and the fact that the next milestone is the fly gym rather than
+Three.js.
 
 - [ ] **Step 5: Run final verification**
 
