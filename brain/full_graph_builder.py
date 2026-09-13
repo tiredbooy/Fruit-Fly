@@ -18,17 +18,19 @@ import pyarrow.feather as feather
 from scipy.sparse import csr_matrix
 
 from brain.data import DataIntegrityError, SourceManifest, file_sha256
-from brain.full_graph import FullGraphMetadata, FullGraphRepository, SCHEMA_VERSION
+from brain.full_graph import (
+    DYNAMICS,
+    FILTER_NAME,
+    POLARITY_POLICY,
+    FullGraphMetadata,
+    FullGraphRepository,
+    SCHEMA_VERSION,
+)
 
 
 OFFICIAL_NEURON_COUNT = 166_606
 OFFICIAL_CONNECTED_NEURON_COUNT = 166_400
 OFFICIAL_EDGE_COUNT = 25_574_615
-FILTER_NAME = "valid-superclass-v1"
-POLARITY_POLICY = "ach-positive-gaba-glu-his-negative-modulators-zero-v1"
-DYNAMICS = "incoming-log1p-rate-v1"
-
-
 @dataclass(frozen=True, slots=True)
 class ExpectedGraphCounts:
     neurons: int = OFFICIAL_NEURON_COUNT

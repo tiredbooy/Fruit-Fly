@@ -16,7 +16,7 @@ from brain.data import (
     SourceManifest,
     load_release,
 )
-from brain.full_graph import FullGraphRepository
+from brain.full_graph import FullGraph, FullGraphRepository
 from brain.full_graph_builder import FullGraphBuilder
 from brain.full_network import FullConnectomeNetwork
 from brain.network import RuntimeCircuit
@@ -148,7 +148,7 @@ def brain_build() -> int:
     return 0
 
 
-def load_full_graph():
+def load_full_graph() -> FullGraph:
     source = SourceManifest.from_json(SOURCE_MANIFEST)
     return FullGraphRepository(FULL_GRAPH_DIRECTORY).load(source)
 
@@ -181,12 +181,17 @@ def brain_benchmark(substeps: int) -> int:
         print("Error: substeps must be greater than zero")
         return 2
     try:
+        load_started = time.perf_counter()
         graph = load_full_graph()
+        load_elapsed = time.perf_counter() - load_started
         circuit = load_runtime_circuit()
         network = FullConnectomeNetwork(graph, circuit)
-        network.step({}, substeps=1)
+        network.step({}, substeps=10)
         started = time.perf_counter()
         network.step({}, substeps=substeps)
+        artifact_bytes = sum(
+            path.stat().st_size for path in FULL_GRAPH_DIRECTORY.glob("*") if path.is_file()
+        )
     except (DataIntegrityError, ValueError, KeyError, OSError) as error:
         print(f"Brain benchmark error: {error}")
         return 1
@@ -194,9 +199,12 @@ def brain_benchmark(substeps: int) -> int:
     elapsed = time.perf_counter() - started
     print(f"Neurons: {graph.metadata.neuron_count:,}")
     print(f"Edges: {graph.metadata.edge_count:,}")
+    print(f"Artifact size: {artifact_bytes / (1024 ** 2):.1f} MiB")
+    print(f"Graph load: {load_elapsed:.4f} seconds")
     print(f"Substeps: {substeps:,}")
     print(f"Elapsed: {elapsed:.4f} seconds")
     print(f"Per substep: {elapsed * 1000.0 / substeps:.3f} ms")
+    print(f"Substeps per second: {substeps / elapsed:.2f}")
     return 0
 
 

@@ -12,6 +12,9 @@ from brain.data import DataIntegrityError, SourceManifest
 
 
 SCHEMA_VERSION = 1
+FILTER_NAME = "valid-superclass-v1"
+POLARITY_POLICY = "ach-positive-gaba-glu-his-negative-modulators-zero-v1"
+DYNAMICS = "incoming-log1p-rate-v1"
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +99,12 @@ class FullGraphRepository:
         expected = {name: asset.sha256 for name, asset in source.sources.items()}
         if metadata.source_sha256 != expected:
             raise DataIntegrityError("Full brain artifact source checksum does not match")
+        if metadata.filter_name != FILTER_NAME:
+            raise DataIntegrityError("Full brain artifact filter is incompatible")
+        if metadata.polarity_policy != POLARITY_POLICY:
+            raise DataIntegrityError("Full brain artifact polarity policy is incompatible")
+        if metadata.dynamics != DYNAMICS:
+            raise DataIntegrityError("Full brain artifact dynamics are incompatible")
         if metadata.neuron_count <= 0 or metadata.edge_count < 0:
             raise DataIntegrityError("Full brain artifact counts are invalid")
         if not 0 <= metadata.connected_neuron_count <= metadata.neuron_count:

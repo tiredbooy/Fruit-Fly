@@ -62,6 +62,14 @@ class FullGraphRepositoryTest(unittest.TestCase):
         with self.assertRaisesRegex(DataIntegrityError, "finite"):
             FullGraphRepository(self.path).load(self.source)
 
+    def test_rejects_an_unsupported_dynamics_contract(self) -> None:
+        metadata = json.loads((self.path / "metadata.json").read_text())
+        metadata["dynamics"] = "unknown-dynamics"
+        (self.path / "metadata.json").write_text(json.dumps(metadata))
+
+        with self.assertRaisesRegex(DataIntegrityError, "dynamics"):
+            FullGraphRepository(self.path).load(self.source)
+
     def _write_valid_artifact(self) -> None:
         metadata = {
             "schema_version": 1,
@@ -75,7 +83,7 @@ class FullGraphRepositoryTest(unittest.TestCase):
                 "neurotransmitters": "c" * 64,
             },
             "filter_name": "valid-superclass-v1",
-            "polarity_policy": "test-policy-v1",
+            "polarity_policy": "ach-positive-gaba-glu-his-negative-modulators-zero-v1",
             "dynamics": "incoming-log1p-rate-v1",
             "transmitter_counts": {"acetylcholine": 1, "gaba": 1, "missing": 1},
         }

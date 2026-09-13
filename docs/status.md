@@ -6,9 +6,10 @@ Last updated: 2026-09-13
 
 Experiment 1 runs one fly with a dynamic food source in a bounded two-dimensional
 world. Food begins absent, respawns after random delays, expires, and may appear
-far away or outside accessible bounds. The live English terminal shows physical state, bilateral smell and
-vision, hunger, named descending-neuron activity, motor output, reward, and
-persistent association strength.
+far away or outside accessible bounds. The live English terminal shows physical
+state, bilateral smell and vision, hunger, named descending-neuron activity,
+motor output, reward, and persistent association strength. The same experiment
+can run on the compact circuit or the full MaleCNS graph.
 
 The renderer uses a fly emoji for the body. Its status line reports `WAITING FOR
 FOOD` while absent and `FOOD OUT OF REACH` for an outside-arena spawn.
@@ -25,7 +26,10 @@ FOOD` while absent and `FOOD OUT OF REACH` for an outside-arena spawn.
 - Food contact activates official PAM01 reward identity and depresses eligible
   KC-to-MBON01 multipliers.
 - Learned memory is atomically saved and restored across program runs.
-- `make run`, `make run-fresh`, `make test`, and `make data-status` are available.
+- A memory-mapped CSR artifact contains all 166,606 valid-superclass bodies,
+  including 206 isolated bodies, and 25,574,615 valid neuron-to-neuron edges.
+- `make brain-build`, `make brain-status`, `make brain-benchmark`, and
+  `make run-full` manage the optional full backend. Compact remains the default.
 
 ## Verified situation
 
@@ -42,18 +46,46 @@ This demonstrates acquisition and cross-process persistence. It does not prove
 biological accuracy beyond the explicitly cited structural and functional
 constraints.
 
+The full graph was built and measured on the development machine on 2026-09-13:
+
+```text
+build time:          6.97 seconds
+artifact size:       198.3 MiB
+neurons:             166,606
+connected neurons:   166,400
+edges:               25,574,615
+graph load:           0.0679 seconds
+10 neural substeps:  0.1460 seconds
+per neural substep:  14.596 ms
+neural substeps/sec: 68.51
+```
+
+A five-step `run --brain full` smoke test completed successfully. Benchmark
+results are machine-specific and should be remeasured after dependency, graph,
+or dynamics changes.
+
 Final verification commands:
 
 ```bash
 make test
 make data-status
+make brain-status
+make brain-benchmark
 make help
 ```
 
 ## Known limitations
 
-- Experiment 1 uses a compact selected circuit, not all MaleCNS neurons.
+- Experiment 1 defaults to the compact circuit; full mode is opt-in.
 - Neural state is a rate proxy rather than a conductance or spike model.
+- Full-graph transmitter signs and rate equations are explicit modeling
+  assumptions, not measured membrane physiology.
+- Neuromodulators have zero fast-current sign in the full graph; dedicated
+  modulatory pathways remain future work.
+- Sensory activity reaches the configured descending neurons in full mode, but
+  whole-graph incoming normalization makes current motor output approximately
+  `10^-6`. Movement is therefore not visually meaningful until the gym milestone
+  defines and validates a full-network calibration instead of inventing a gain.
 - Vision begins at L2 and omits photoreceptor transduction.
 - The DM1 channel is used as an ACV-like food-odor approximation.
 - Learning supports one appetitive odor association only.
@@ -65,7 +97,8 @@ make help
 
 ## Next milestone
 
-The next scientifically coherent expansion is multiple distinguishable odor
-channels with acquisition, extinction, and a clean-memory control. That work
-must select additional sensory populations from official annotations and must
-not reuse DM1 IDs for unrelated odors.
+The approved order is: use the full brain engine as infrastructure, build a fly
+gym with measurable tasks, add general learning across those tasks, add Three.js
+observation, and only then evaluate poker as a high-level research experiment.
+The next implementation milestone is the gym task protocol and benchmark suite;
+Three.js and poker are not implemented yet.

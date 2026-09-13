@@ -5,8 +5,8 @@
 FlyBrain Lab is a from-scratch, inspectable fruit-fly neural simulation built
 from the official MaleCNS connectome. The current milestone is Experiment 1:
 one fly, one food source, hunger, smell, simple vision, locomotion, and
-appetitive olfactory learning. This is a neural-control simulation, not a claim
-of consciousness.
+appetitive olfactory learning. The project also has an optional full-connectome
+CPU backend. This is a neural-control simulation, not a claim of consciousness.
 
 ## MaleCNS provenance
 
@@ -19,6 +19,8 @@ of consciousness.
 - Validate every selected runtime edge against the official weights asset.
 - Store evidence URLs and deterministic selection rules with circuit manifests.
 - Never silently replace an unknown transmitter polarity with an assumed sign.
+- The full graph uses the official valid-superclass filter: keep nonempty
+  superclass values that do not contain `tbc`, and retain isolated valid bodies.
 
 ## Scientific honesty
 
@@ -52,6 +54,8 @@ world -> immutable sensory signals -> brain -> immutable motor signals -> world
   domain calculations.
 - Never add logic equivalent to `if food is left: turn left` or
   `if hunger is high: seek food`.
+- Keep compact and full-connectome engines behind the same `NeuralNetwork`
+  boundary. Compact remains the default until a new experiment opts into full.
 
 ## Learning and memory
 
@@ -75,6 +79,8 @@ world -> immutable sensory signals -> brain -> immutable motor signals -> world
 - Do not add dependencies when the standard library or existing packages work.
 - Do not refactor unrelated code.
 - Run `make test`, `make data-status`, and `git diff --check` before completion.
+- For full-engine changes also run `make brain-status`, `make brain-benchmark`,
+  and a finite `main.py run --brain full` smoke test.
 - Verify that no import crosses directly between `brain` and `world`.
 
 ## Terminal interface
@@ -114,6 +120,8 @@ architecture, destructive action, external publication, or broader scope.
 - Official raw assets live under `data/raw/` and remain git-ignored.
 - Per-run state and learned memory live under `data/runs/` and remain
   git-ignored.
+- Generated full-graph arrays live under `data/processed/`, remain git-ignored,
+  and must be reproducible with `make brain-build`.
 - Reproducible manifests, checksums, selection rules, and compact derived circuit
   declarations are tracked in git.
 - Never commit private data, secrets, temporary files, or machine-specific paths.

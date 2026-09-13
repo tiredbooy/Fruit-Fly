@@ -14,7 +14,17 @@ class ProjectContractTest(unittest.TestCase):
         self.assertIn("MaleCNS provenance", agents)
         self.assertIn("Documentation maintenance", agents)
         self.assertIn("make run", readme)
-        for target in ("run:", "run-fresh:", "test:", "data-status:", "help:"):
+        for target in (
+            "run:",
+            "run-fresh:",
+            "run-full:",
+            "test:",
+            "data-status:",
+            "brain-build:",
+            "brain-status:",
+            "brain-benchmark:",
+            "help:",
+        ):
             self.assertIn(target, makefile)
 
     def test_architecture_science_status_and_decision_are_documented(self) -> None:
@@ -22,12 +32,18 @@ class ProjectContractTest(unittest.TestCase):
         science = (ROOT / "docs/science/learning-memory.md").read_text(encoding="utf-8")
         status = (ROOT / "docs/status.md").read_text(encoding="utf-8")
         decision = (ROOT / "docs/decisions/0001-learning-memory.md").read_text(encoding="utf-8")
+        full_science = (ROOT / "docs/science/full-connectome.md").read_text(encoding="utf-8")
+        full_decision = (
+            ROOT / "docs/decisions/0002-full-connectome-engine.md"
+        ).read_text(encoding="utf-8")
 
         self.assertIn("world must not import brain", architecture)
         self.assertIn("KC-to-MBON01", science)
         self.assertIn("pam01-kc-mbon01-v1", science)
         self.assertIn("Known limitations", status)
         self.assertIn("Decision", decision)
+        self.assertIn("166,606", full_science)
+        self.assertIn("Memory-Mapped Full Connectome Engine", full_decision)
 
 
 if __name__ == "__main__":

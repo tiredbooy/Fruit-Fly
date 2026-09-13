@@ -3,6 +3,11 @@
 - `make run-fresh`: archive existing memory to .bak and start clean.
 - `make test`: complete unittest suite.
 - `make data-status`: checksum and semantic validation against the full official MaleCNS assets.
+- `make brain-build`: rebuild the 166,606-neuron, 25,574,615-edge CSR artifact.
+- `make brain-status`: validate the generated full graph and its source identity.
+- `make brain-benchmark`: measure full-graph sparse update speed.
+- `make run-full`: run Experiment 1 with the full backend.
 - `make help`: concise command list.
 - Direct finite smoke: `.venv/bin/python -B main.py run --steps 600 --fps 30 --memory-file /tmp/flybrain-memory.json`.
 - Default memory path: data/runs/experiment-001-memory.json.
+- Generated graph path: data/processed/malecns/v1.0/full-graph/ (git-ignored).

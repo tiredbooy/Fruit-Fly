@@ -1,5 +1,7 @@
 # flybrain-lab
 - Experimental embodied fruit-fly simulator; Experiment 1 is one fly, one food source, hunger, smell, simple vision, locomotion, and appetitive memory.
+- Optional full MaleCNS backend: 166,606 valid v1.0 bodies and 25,574,615 edges in a generated memory-mapped CSR artifact.
+- Approved next order: fly gym, general learning, Three.js observer, then poker research.
 - Scientific invariant: neuron IDs, types/classes, transmitters, and structural edges must resolve from pinned MaleCNS assets. Never invent biological identities silently. Model equations/constants must be labeled assumptions.
 - Dependency invariant: brain and world do not import each other. simulation orchestrates the closed loop; adapters translate signals.
 - Terminal text, borders, and meters are English ASCII; the fly body is intentionally rendered with a fly emoji by explicit user request.
@@ -13,4 +15,4 @@
 - Project-specific coding practices: `mem:conventions`.
 - Runnable targets: `mem:suggested_commands`.
 - Required completion gates: `mem:task_completion`.
-- Durable human docs: AGENTS.md, README.md, docs/architecture.md, docs/science/learning-memory.md, docs/status.md, docs/decisions/.
+- Durable human docs: AGENTS.md, README.md, docs/architecture.md, docs/science/, docs/status.md, docs/decisions/.

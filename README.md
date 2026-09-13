@@ -2,8 +2,8 @@
 
 FlyBrain Lab is a from-scratch, inspectable neural-control simulation using the
 official MaleCNS v1.0 connectome. Experiment 1 contains one fly, a dynamic food
-source, hunger, bilateral smell, simple vision, a compact connectome-derived
-sensor-to-motor circuit, and persistent appetitive odor memory.
+source, hunger, bilateral smell, simple vision, persistent appetitive odor
+memory, and selectable compact or full-connectome neural engines.
 
 It is not a consciousness simulation. Neural activity shown in the terminal is
 numerical model telemetry, not a claim that the simulated fly has subjective
@@ -12,7 +12,7 @@ experience.
 ## Requirements
 
 - Python 3.14 virtual environment at `.venv/`
-- Existing project dependencies: pandas and PyArrow
+- Python packages from `requirements.txt`: NumPy, pandas, PyArrow, and SciPy
 - GNU Make for the short commands below
 - Official MaleCNS files in `data/raw/malecns/v1.0/`
 
@@ -22,6 +22,17 @@ experience.
 make data-status
 make run
 ```
+
+Build and run all 166,606 valid MaleCNS v1.0 neurons:
+
+```bash
+make brain-build
+make brain-status
+make run-full
+```
+
+The generated 198.3 MiB artifact stays under `data/processed/` and is not
+committed. `make brain-build` recreates it from checksum-pinned official files.
 
 Stop the animation with `Ctrl+C`. The terminal interface uses English text and
 ASCII framing, with a fly emoji for the body. A terminal that cannot encode the
@@ -41,8 +52,12 @@ spawn sequence:
 ```text
 make run          Run Experiment 1 with persistent learned memory
 make run-fresh    Archive existing memory and start with clean memory
+make run-full     Run Experiment 1 with the full MaleCNS backend
 make test         Run the complete test suite
 make data-status  Verify official data, annotations, roles, and edge weights
+make brain-build  Build the full memory-mapped sparse graph
+make brain-status Validate the full graph and source identity
+make brain-benchmark  Measure full-graph neural update speed
 make help         Print available commands
 ```
 
@@ -50,6 +65,12 @@ The equivalent direct command is:
 
 ```bash
 .venv/bin/python -B main.py run --animate
+```
+
+Compact remains the default. Full mode never silently falls back:
+
+```bash
+.venv/bin/python -B main.py run --animate --brain full
 ```
 
 ## Memory
@@ -81,6 +102,7 @@ Detailed documentation:
 
 - `docs/architecture.md`: package boundaries and runtime sequencing
 - `docs/science/learning-memory.md`: evidence, equations, IDs, and assumptions
+- `docs/science/full-connectome.md`: full-graph filtering, polarity, and dynamics
 - `docs/status.md`: current verified state and limitations
 - `docs/decisions/`: architectural decision history
 - `AGENTS.md`: permanent contributor and coding-agent rules
