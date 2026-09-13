@@ -152,12 +152,15 @@ https://pmc.ncbi.nlm.nih.gov/articles/PMC3073827/
 
 The environment exposes grayscale light or contrast by direction, not object
 identity. A coarse retinal sampler projects the visible food shape into angular
-sectors. The brain adapter resolves those sectors to official MaleCNS
-photoreceptors using `R1-R6`, `R7`, or `R8` annotations and
-`assignedOlHex1`/`assignedOlHex2` coordinates.
+sectors. MaleCNS `v1.0` annotates photoreceptor types such as `R1-R6`, but its
+retinal hex-coordinate fields are populated on downstream retinotopic optic-lobe
+types such as `L1` and `L2`, not on the `R1-R6` rows. Experiment 1 therefore
+injects grayscale signals into officially annotated `L1`/`L2` neurons selected
+with `assignedOlHex1`/`assignedOlHex2` coordinates.
 
-The initial retinal resolution is a model parameter. It must not be presented
-as a property supplied by MaleCNS.
+The initial retinal resolution and omission of explicit `R1-R6`
+phototransduction are modeling assumptions. They must not be presented as
+properties supplied by MaleCNS.
 
 ## Hunger and Ingestion
 

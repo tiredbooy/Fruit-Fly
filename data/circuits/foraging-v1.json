@@ -1,0 +1,69 @@
+{
+  "dataset": "male-cns:v1.0",
+  "roles": [
+    {
+      "role": "forward_left",
+      "body_id": 10783,
+      "type": "DNp09",
+      "side": "L",
+      "evidence": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9435592/"
+    },
+    {
+      "role": "forward_right",
+      "body_id": 11177,
+      "type": "DNp09",
+      "side": "R",
+      "evidence": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9435592/"
+    },
+    {
+      "role": "steering_low_left",
+      "body_id": 10442,
+      "type": "DNa01",
+      "side": "L",
+      "evidence": "https://elifesciences.org/articles/102230"
+    },
+    {
+      "role": "steering_low_right",
+      "body_id": 10760,
+      "type": "DNa01",
+      "side": "R",
+      "evidence": "https://elifesciences.org/articles/102230"
+    },
+    {
+      "role": "steering_high_left",
+      "body_id": 523769,
+      "type": "DNa02",
+      "side": "L",
+      "evidence": "https://elifesciences.org/articles/102230"
+    },
+    {
+      "role": "steering_high_right",
+      "body_id": 10360,
+      "type": "DNa02",
+      "side": "R",
+      "evidence": "https://elifesciences.org/articles/102230"
+    }
+  ],
+  "sensory_selectors": {
+    "food_odor": {
+      "type": "ORN_DM1",
+      "side_from_instance_suffix": true,
+      "evidence": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3073827/"
+    },
+    "grayscale_vision": {
+      "types": ["L1", "L2"],
+      "retinotopy_fields": ["assignedOlHex1", "assignedOlHex2"]
+    }
+  },
+  "assumptions": {
+    "minimum_connection_weight": 10,
+    "maximum_sensor_to_motor_hops": 4,
+    "unknown_polarity_policy": "reject",
+    "runtime_pathway_selection": "strongest-parent shortest paths, acetylcholine only",
+    "runtime_visual_input_type": "L2",
+    "steering_readout": "positive right-minus-left descending activity; positive body yaw is counter-clockwise",
+    "food_odor_profile": "apple-cider-vinegar-like",
+    "ingestion": "body contact",
+    "vision_input_stage": "L1/L2; R1-R6 phototransduction omitted in Experiment 1"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "dataset": "male-cns:v1.0",
+  "source_weights_sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1",
+  "selection": "Strongest-parent shortest paths, weight >= 10, maximum 4 hops, acetylcholine paths only",
+  "sensory_inputs": {
+    "smell_left": [416090, 363119, 742571852, 189518],
+    "smell_right": [184230, 192631, 183425, 181207],
+    "vision_left": [36800, 18571, 546043, 21982, 14473, 546087],
+    "vision_right": [63316, 28221, 27196, 37738, 24236, 27390]
+  },
+  "motor_roles": {
+    "forward_left": 10783,
+    "forward_right": 11177,
+    "steering_low_left": 10442,
+    "steering_low_right": 10760,
+    "steering_high_left": 523769,
+    "steering_high_right": 10360
+  },
+  "edges": [
+    {"body_pre": 416090, "body_post": 10567, "weight": 24},
+    {"body_pre": 184230, "body_post": 10567, "weight": 38},
+    {"body_pre": 10567, "body_post": 19519, "weight": 64},
+    {"body_pre": 19519, "body_post": 10360, "weight": 39},
+    {"body_pre": 19519, "body_post": 11863, "weight": 18},
+    {"body_pre": 11863, "body_post": 10760, "weight": 211},
+
+    {"body_pre": 363119, "body_post": 10702, "weight": 27},
+    {"body_pre": 192631, "body_post": 10702, "weight": 29},
+    {"body_pre": 10702, "body_post": 19508, "weight": 59},
+    {"body_pre": 19508, "body_post": 532944, "weight": 20},
+    {"body_pre": 532944, "body_post": 10442, "weight": 207},
+    {"body_pre": 19508, "body_post": 523769, "weight": 83},
+
+    {"body_pre": 742571852, "body_post": 530777, "weight": 13},
+    {"body_pre": 183425, "body_post": 530777, "weight": 15},
+    {"body_pre": 530777, "body_post": 10408, "weight": 51},
+    {"body_pre": 10408, "body_post": 521758, "weight": 12},
+    {"body_pre": 521758, "body_post": 10783, "weight": 26},
+
+    {"body_pre": 189518, "body_post": 11517, "weight": 13},
+    {"body_pre": 181207, "body_post": 11517, "weight": 17},
+    {"body_pre": 11517, "body_post": 527409, "weight": 18},
+    {"body_pre": 527409, "body_post": 12974, "weight": 21},
+    {"body_pre": 12974, "body_post": 11177, "weight": 14},
+
+    {"body_pre": 36800, "body_post": 26149, "weight": 30},
+    {"body_pre": 26149, "body_post": 91616, "weight": 14},
+    {"body_pre": 91616, "body_post": 519982, "weight": 13},
+    {"body_pre": 519982, "body_post": 10360, "weight": 184},
+
+    {"body_pre": 18571, "body_post": 524172, "weight": 11},
+    {"body_pre": 524172, "body_post": 97200, "weight": 10},
+    {"body_pre": 97200, "body_post": 14040, "weight": 14},
+    {"body_pre": 14040, "body_post": 10442, "weight": 131},
+
+    {"body_pre": 546043, "body_post": 520554, "weight": 31},
+    {"body_pre": 520554, "body_post": 17340, "weight": 13},
+    {"body_pre": 17340, "body_post": 10373, "weight": 31},
+    {"body_pre": 10373, "body_post": 10760, "weight": 190},
+
+    {"body_pre": 21982, "body_post": 187377, "weight": 25},
+    {"body_pre": 187377, "body_post": 525844, "weight": 11},
+    {"body_pre": 525844, "body_post": 10783, "weight": 13},
+
+    {"body_pre": 14473, "body_post": 512685, "weight": 29},
+    {"body_pre": 512685, "body_post": 28080, "weight": 18},
+    {"body_pre": 28080, "body_post": 10778, "weight": 10},
+    {"body_pre": 10778, "body_post": 11177, "weight": 42},
+
+    {"body_pre": 546087, "body_post": 542103, "weight": 20},
+    {"body_pre": 542103, "body_post": 108445, "weight": 10},
+    {"body_pre": 108445, "body_post": 523769, "weight": 12},
+
+    {"body_pre": 63316, "body_post": 134324, "weight": 25},
+    {"body_pre": 134324, "body_post": 22063, "weight": 14},
+    {"body_pre": 22063, "body_post": 10360, "weight": 24},
+
+    {"body_pre": 28221, "body_post": 41833, "weight": 11},
+    {"body_pre": 41833, "body_post": 16128, "weight": 31},
+    {"body_pre": 16128, "body_post": 514764, "weight": 30},
+    {"body_pre": 514764, "body_post": 10442, "weight": 174},
+
+    {"body_pre": 27196, "body_post": 76346, "weight": 32},
+    {"body_pre": 76346, "body_post": 32400, "weight": 12},
+    {"body_pre": 32400, "body_post": 13273, "weight": 13},
+    {"body_pre": 13273, "body_post": 10760, "weight": 121},
+
+    {"body_pre": 37738, "body_post": 94364, "weight": 24},
+    {"body_pre": 94364, "body_post": 19277, "weight": 10},
+    {"body_pre": 19277, "body_post": 512484, "weight": 31},
+    {"body_pre": 512484, "body_post": 10783, "weight": 42},
+
+    {"body_pre": 24236, "body_post": 51770, "weight": 12},
+    {"body_pre": 51770, "body_post": 39427, "weight": 14},
+    {"body_pre": 39427, "body_post": 11177, "weight": 19},
+
+    {"body_pre": 27390, "body_post": 75799, "weight": 36},
+    {"body_pre": 75799, "body_post": 42084, "weight": 18},
+    {"body_pre": 42084, "body_post": 519461, "weight": 12},
+    {"body_pre": 519461, "body_post": 523769, "weight": 244}
+  ]
+}
