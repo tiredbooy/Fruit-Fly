@@ -1,0 +1,4 @@
+numpy>=2.0,<3
+pandas>=2.2,<4
+pyarrow>=18,<26
+scipy>=1.14,<2
