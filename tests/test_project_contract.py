@@ -18,6 +18,9 @@ class ProjectContractTest(unittest.TestCase):
             "run:",
             "run-fresh:",
             "run-full:",
+            "web:",
+            "web-full:",
+            "frontend-build:",
             "test:",
             "data-status:",
             "brain-build:",
@@ -36,6 +39,9 @@ class ProjectContractTest(unittest.TestCase):
         full_decision = (
             ROOT / "docs/decisions/0002-full-connectome-engine.md"
         ).read_text(encoding="utf-8")
+        browser_decision = (
+            ROOT / "docs/decisions/0003-threejs-observatory.md"
+        ).read_text(encoding="utf-8")
 
         self.assertIn("world must not import brain", architecture)
         self.assertIn("KC-to-MBON01", science)
@@ -44,6 +50,8 @@ class ProjectContractTest(unittest.TestCase):
         self.assertIn("Decision", decision)
         self.assertIn("166,606", full_science)
         self.assertIn("Memory-Mapped Full Connectome Engine", full_decision)
+        self.assertIn("Three.js Observatory", browser_decision)
+        self.assertIn("WebSocket", architecture)
 
 
 if __name__ == "__main__":

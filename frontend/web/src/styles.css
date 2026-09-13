@@ -1,0 +1,590 @@
+:root {
+  color-scheme: dark;
+  font-family: Vazirmatn, IRANSansX, "Noto Sans Arabic", Tahoma, sans-serif;
+  color: #e8efef;
+  background: #070b0f;
+  font-synthesis: none;
+  --chamber-black: #070b0f;
+  --optical-slate: #14202a;
+  --optical-line: #29404d;
+  --specimen-cyan: #58d6d0;
+  --food-amber: #f2b84b;
+  --motor-magenta: #e36da6;
+  --paper-white: #e8efef;
+  --muted-cyan: #8aa6aa;
+  --danger: #ff7b70;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--chamber-black);
+}
+
+body {
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+::selection {
+  color: var(--chamber-black);
+  background: var(--specimen-cyan);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--chamber-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--optical-line);
+  border-radius: 8px;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--food-amber);
+  outline-offset: 3px;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-rows: 76px minmax(0, 1fr);
+  height: 100svh;
+  padding: 0 24px 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--optical-line);
+}
+
+.identity,
+.session-controls,
+.chamber-heading,
+.instrument-heading,
+.activity-heading {
+  display: flex;
+  align-items: center;
+}
+
+.identity {
+  gap: 14px;
+}
+
+.specimen-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--specimen-cyan);
+  border-radius: 50%;
+  color: var(--specimen-cyan);
+  font: 700 12px/1 ui-monospace, monospace;
+  letter-spacing: 0.08em;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.35rem, 2vw, 1.55rem);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 640;
+}
+
+.identity-code,
+.section-code,
+.instrument-code,
+.chamber-meta,
+.activity-count {
+  color: var(--muted-cyan);
+  font: 600 0.65rem/1.4 ui-monospace, monospace;
+  letter-spacing: 0.08em;
+}
+
+.identity-code {
+  margin-top: 2px;
+}
+
+.section-code {
+  margin-top: 4px;
+}
+
+.session-controls {
+  gap: 18px;
+}
+
+.connection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-cyan);
+  font-size: 0.78rem;
+}
+
+.connection-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--food-amber);
+}
+
+.connection-dot[data-state="open"] {
+  background: var(--specimen-cyan);
+  box-shadow: 0 0 10px 2px rgb(88 214 208 / 35%);
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+.connection-dot[data-state="incompatible"] {
+  background: var(--danger);
+}
+
+.primary-action {
+  min-width: 86px;
+  min-height: 40px;
+  border: 1px solid var(--specimen-cyan);
+  border-radius: 12px;
+  color: var(--chamber-black);
+  background: var(--specimen-cyan);
+  cursor: pointer;
+  transition: transform 140ms var(--ease), background 140ms var(--ease);
+}
+
+.primary-action:hover:not(:disabled) {
+  background: #7ce5df;
+  transform: translateY(-1px);
+}
+
+.primary-action:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+.primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.workspace {
+  display: grid;
+  direction: ltr;
+  grid-template-columns: 330px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) 180px;
+  gap: 14px;
+  min-height: 0;
+  padding-top: 16px;
+}
+
+.chamber {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--optical-line);
+  border-radius: 14px;
+  background: #0a1015;
+  box-shadow: 0 18px 48px 8px rgb(0 0 0 / 28%);
+  animation: chamber-reveal 650ms var(--ease) both;
+  direction: rtl;
+}
+
+.chamber-heading,
+.activity-heading {
+  justify-content: space-between;
+  min-height: 62px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--optical-line);
+}
+
+.chamber-meta {
+  display: flex;
+  gap: 16px;
+  direction: ltr;
+}
+
+.chamber-meta span + span {
+  padding-left: 16px;
+  border-left: 1px solid var(--optical-line);
+}
+
+.scene {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-state {
+  position: absolute;
+  z-index: 2;
+  inset: 50% auto auto 50%;
+  max-width: 28rem;
+  padding: 10px 14px;
+  border: 1px solid var(--optical-line);
+  border-radius: 12px;
+  color: var(--muted-cyan);
+  background: #0a1015;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.scene-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--optical-line);
+  color: var(--muted-cyan);
+  font-size: 0.68rem;
+}
+
+#food-state {
+  color: var(--food-amber);
+}
+
+.instruments {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid var(--optical-line);
+  border-radius: 14px;
+  background: var(--optical-slate);
+  box-shadow: 0 16px 44px 6px rgb(0 0 0 / 22%);
+  direction: rtl;
+}
+
+.instrument {
+  padding: 17px;
+  border-bottom: 1px solid var(--optical-line);
+}
+
+.instrument:last-child {
+  border-bottom: 0;
+}
+
+.instrument-heading {
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.instrument-emphasis output {
+  color: var(--food-amber);
+  font: 700 1.15rem/1 ui-monospace, monospace;
+}
+
+meter {
+  width: 100%;
+  height: 8px;
+  border: 0;
+  background: #091016;
+}
+
+meter::-webkit-meter-bar {
+  border: 0;
+  border-radius: 6px;
+  background: #091016;
+}
+
+meter::-webkit-meter-optimum-value {
+  border-radius: 6px;
+  background: var(--food-amber);
+}
+
+.paired-reading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  color: var(--muted-cyan);
+  font-size: 0.78rem;
+}
+
+.paired-reading output {
+  color: var(--paper-white);
+  font: 600 0.76rem/1.5 ui-monospace, monospace;
+}
+
+.motor-forward output {
+  color: var(--specimen-cyan);
+}
+
+.motor-turn output {
+  color: var(--motor-magenta);
+}
+
+.role-list {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+  margin: 0;
+  font: 0.68rem/1.4 ui-monospace, monospace;
+}
+
+.role-list dt {
+  color: var(--muted-cyan);
+}
+
+.role-list dd {
+  margin: 0;
+  color: var(--motor-magenta);
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-ribbon {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--optical-line);
+  border-radius: 14px;
+  background: #0b1218;
+  direction: rtl;
+}
+
+.activity-heading {
+  min-height: 54px;
+  padding-block: 8px;
+}
+
+.neuron-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--optical-line);
+}
+
+.neuron-row,
+.empty-neurons {
+  min-width: 0;
+  padding: 11px 14px;
+  background: #0b1218;
+}
+
+.neuron-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+}
+
+.neuron-identity {
+  overflow: hidden;
+  color: var(--paper-white);
+  font: 600 0.68rem/1.3 ui-monospace, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.neuron-id {
+  grid-row: 2;
+  color: var(--muted-cyan);
+  font: 0.62rem/1.2 ui-monospace, monospace;
+}
+
+.neuron-row b {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--motor-magenta);
+  font: 700 0.72rem/1 ui-monospace, monospace;
+}
+
+.empty-neurons {
+  grid-column: 1 / -1;
+  color: var(--muted-cyan);
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+body[data-running="false"] .scene::after {
+  position: absolute;
+  inset: 16px 16px auto auto;
+  padding: 6px 10px;
+  border: 1px solid var(--food-amber);
+  border-radius: 10px;
+  color: var(--food-amber);
+  background: #0a1015;
+  content: "متوقف";
+  font-size: 0.72rem;
+}
+
+@keyframes chamber-reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(8px) scale(0.995);
+  }
+  to {
+    clip-path: inset(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes live-pulse {
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 14px 3px rgb(88 214 208 / 42%);
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    overflow: auto;
+  }
+
+  .app-shell {
+    display: block;
+    height: auto;
+    min-height: 100svh;
+    padding: 0 14px 20px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .chamber {
+    grid-column: auto;
+    grid-row: auto;
+    min-height: 62svh;
+  }
+
+  .instruments {
+    display: grid;
+    grid-column: auto;
+    grid-row: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .instrument:nth-child(odd) {
+    border-left: 1px solid var(--optical-line);
+  }
+
+  .role-instrument {
+    grid-column: 1 / -1;
+  }
+
+  .neuron-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .activity-ribbon {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    padding-inline: 10px;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 72px;
+  }
+
+  .identity-code,
+  .connection {
+    display: none;
+  }
+
+  .session-controls {
+    gap: 8px;
+  }
+
+  .workspace {
+    padding-top: 10px;
+  }
+
+  .chamber {
+    min-height: 66svh;
+  }
+
+  .chamber-heading {
+    align-items: flex-start;
+  }
+
+  .chamber-meta {
+    display: grid;
+    gap: 2px;
+    text-align: left;
+  }
+
+  .chamber-meta span + span {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .scene-caption span:last-child {
+    display: none;
+  }
+
+  .instruments,
+  .neuron-list {
+    grid-template-columns: 1fr;
+  }
+
+  .instrument:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .role-instrument {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

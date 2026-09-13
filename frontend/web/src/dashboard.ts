@@ -1,0 +1,191 @@
+import { formatBodyId, formatReading } from "./snapshot";
+import type { ConnectionState, FrameMessage, HelloMessage } from "./types";
+
+const ROLE_LABELS: Record<string, string> = {
+  forward_left: "DNp09 · L",
+  forward_right: "DNp09 · R",
+  steering_low_left: "DNa01 · L",
+  steering_low_right: "DNa01 · R",
+  steering_high_left: "DNa02 · L",
+  steering_high_right: "DNa02 · R",
+};
+
+interface DashboardElements {
+  connectionDot: HTMLElement;
+  connectionLabel: HTMLElement;
+  runningToggle: HTMLButtonElement;
+  backend: HTMLElement;
+  step: HTMLElement;
+  elapsed: HTMLElement;
+  foodState: HTMLElement;
+  hungerValue: HTMLOutputElement;
+  hungerMeter: HTMLMeterElement;
+  smell: HTMLOutputElement;
+  vision: HTMLOutputElement;
+  forward: HTMLOutputElement;
+  turn: HTMLOutputElement;
+  reward: HTMLOutputElement;
+  association: HTMLOutputElement;
+  memoryState: HTMLElement;
+  roles: HTMLElement;
+  activeCount: HTMLElement;
+  activeNeurons: HTMLOListElement;
+  announcer: HTMLElement;
+  sceneLoading: HTMLElement;
+}
+
+export class Dashboard {
+  private readonly elements: DashboardElements;
+  private running = true;
+
+  constructor(documentRoot: Document, onRunningChange: (running: boolean) => void) {
+    this.elements = elements(documentRoot);
+    this.elements.runningToggle.addEventListener("click", () => {
+      onRunningChange(!this.running);
+    });
+  }
+
+  updateHello(message: HelloMessage): void {
+    this.elements.backend.textContent =
+      message.backend === "full" ? "FULL · 166,606" : "COMPACT · 66 EDGES";
+    this.elements.sceneLoading.hidden = true;
+  }
+
+  updateFrame(frame: FrameMessage): void {
+    this.elements.step.textContent = frame.step.toString(10);
+    this.elements.elapsed.textContent = frame.elapsed.toFixed(1);
+    this.elements.foodState.textContent = frame.food ? "غذا در محیط" : "در انتظار غذا";
+    this.elements.hungerValue.textContent = formatReading(frame.hunger);
+    this.elements.hungerMeter.value = frame.hunger;
+    this.elements.smell.textContent = pair(
+      frame.sensory.smell_left,
+      frame.sensory.smell_right,
+    );
+    this.elements.vision.textContent = pair(
+      frame.sensory.vision_left,
+      frame.sensory.vision_right,
+    );
+    this.elements.forward.textContent = formatReading(frame.motor.forward);
+    this.elements.turn.textContent = signed(frame.motor.turn);
+    this.elements.reward.textContent = formatReading(frame.learning.reward);
+    this.elements.association.textContent = formatReading(
+      frame.learning.association_strength,
+    );
+    this.elements.memoryState.textContent = frame.learning.changed ? "UPDATED" : "STABLE";
+    this.updateRoles(frame.neural.roles);
+    this.updateActiveNeurons(frame);
+  }
+
+  setConnection(state: ConnectionState): void {
+    const labels: Record<ConnectionState, string> = {
+      connecting: "در حال اتصال",
+      open: "زنده",
+      reconnecting: "اتصال دوباره…",
+      incompatible: "نسخه داده ناسازگار است",
+    };
+    this.elements.connectionLabel.textContent = labels[state];
+    this.elements.connectionDot.dataset.state = state;
+    this.elements.runningToggle.disabled = state !== "open";
+    if (state === "incompatible") this.elements.announcer.textContent = labels[state];
+  }
+
+  setRunning(running: boolean): void {
+    this.running = running;
+    this.elements.runningToggle.textContent = running ? "توقف" : "ادامه";
+    this.elements.runningToggle.setAttribute("aria-pressed", String(!running));
+    document.body.dataset.running = String(running);
+    this.elements.announcer.textContent = running ? "شبیه‌سازی ادامه یافت" : "شبیه‌سازی متوقف شد";
+  }
+
+  showWebGlError(): void {
+    this.elements.sceneLoading.hidden = false;
+    this.elements.sceneLoading.textContent = "نمای سه‌بعدی در دسترس نیست؛ اطلاعات زنده همچنان فعال است.";
+  }
+
+  showCommandError(): void {
+    this.elements.announcer.textContent = "فرمان پذیرفته نشد؛ اتصال را دوباره برقرار کنید.";
+  }
+
+  private updateRoles(roles: Record<string, number>): void {
+    this.elements.roles.replaceChildren(
+      ...Object.entries(ROLE_LABELS).flatMap(([role, label]) => {
+        const term = document.createElement("dt");
+        term.textContent = label;
+        const value = document.createElement("dd");
+        value.textContent = formatReading(roles[role] ?? 0);
+        value.dir = "ltr";
+        return [term, value];
+      }),
+    );
+  }
+
+  private updateActiveNeurons(frame: FrameMessage): void {
+    const active = frame.neural.active.filter((neuron) => neuron.activity > 0).slice(0, 6);
+    this.elements.activeCount.textContent = `${active.length} ACTIVE`;
+    if (!active.length) {
+      const empty = document.createElement("li");
+      empty.className = "empty-neurons";
+      empty.textContent = "هنوز فعالیتی ثبت نشده است.";
+      this.elements.activeNeurons.replaceChildren(empty);
+      return;
+    }
+    this.elements.activeNeurons.replaceChildren(
+      ...active.map((neuron) => {
+        const item = document.createElement("li");
+        item.className = "neuron-row";
+        const identity = document.createElement("span");
+        identity.className = "neuron-identity";
+        identity.textContent = neuron.label;
+        identity.dir = "ltr";
+        const bodyId = document.createElement("span");
+        bodyId.className = "neuron-id";
+        bodyId.textContent = formatBodyId(neuron.body_id);
+        const value = document.createElement("b");
+        value.textContent = formatReading(neuron.activity);
+        value.dir = "ltr";
+        item.append(identity, bodyId, value);
+        return item;
+      }),
+    );
+  }
+}
+
+function elements(root: Document): DashboardElements {
+  return {
+    connectionDot: required(root, "connection-dot"),
+    connectionLabel: required(root, "connection-label"),
+    runningToggle: required(root, "running-toggle") as HTMLButtonElement,
+    backend: required(root, "backend-label"),
+    step: required(root, "step-value"),
+    elapsed: required(root, "elapsed-value"),
+    foodState: required(root, "food-state"),
+    hungerValue: required(root, "hunger-value") as HTMLOutputElement,
+    hungerMeter: required(root, "hunger-meter") as HTMLMeterElement,
+    smell: required(root, "smell-value") as HTMLOutputElement,
+    vision: required(root, "vision-value") as HTMLOutputElement,
+    forward: required(root, "forward-value") as HTMLOutputElement,
+    turn: required(root, "turn-value") as HTMLOutputElement,
+    reward: required(root, "reward-value") as HTMLOutputElement,
+    association: required(root, "association-value") as HTMLOutputElement,
+    memoryState: required(root, "memory-state"),
+    roles: required(root, "role-list"),
+    activeCount: required(root, "active-count"),
+    activeNeurons: required(root, "active-neurons") as HTMLOListElement,
+    announcer: required(root, "announcer"),
+    sceneLoading: required(root, "scene-loading"),
+  };
+}
+
+function required(root: Document, id: string): HTMLElement {
+  const element = root.getElementById(id);
+  if (!element) throw new Error(`Missing interface element: ${id}`);
+  return element;
+}
+
+function pair(left: number, right: number): string {
+  return `${formatReading(left)} / ${formatReading(right)}`;
+}
+
+function signed(value: number): string {
+  return `${value >= 0 ? "+" : ""}${formatReading(value)}`;
+}

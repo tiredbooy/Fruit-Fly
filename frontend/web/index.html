@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070b0f" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="رصدخانه زنده شبیه‌سازی مغز مگس میوه با داده‌های MaleCNS"
+    />
+    <title>رصدخانه مگس | FlyBrain Lab</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="identity">
+          <span class="specimen-mark" aria-hidden="true">FB</span>
+          <div>
+            <h1>رصدخانه مگس</h1>
+            <p class="identity-code">FLYBRAIN LAB · MALECNS V1.0</p>
+          </div>
+        </div>
+        <div class="session-controls">
+          <div class="connection" aria-live="polite">
+            <span id="connection-dot" class="connection-dot"></span>
+            <span id="connection-label">در حال اتصال</span>
+          </div>
+          <button id="running-toggle" class="primary-action" type="button" disabled>
+            توقف
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="chamber" aria-labelledby="chamber-title">
+          <div class="chamber-heading">
+            <div>
+              <h2 id="chamber-title">محفظه زنده</h2>
+              <p class="section-code">SPECIMEN CHAMBER</p>
+            </div>
+            <div class="chamber-meta" dir="ltr">
+              <span id="backend-label">—</span>
+              <span>STEP <b id="step-value">0</b></span>
+              <span><b id="elapsed-value">0.0</b>s</span>
+            </div>
+          </div>
+          <div id="scene" class="scene" role="img" aria-label="نمای سه‌بعدی محفظه مگس">
+            <div id="scene-loading" class="scene-state">در حال دریافت وضعیت زنده…</div>
+          </div>
+          <div class="scene-caption">
+            <span id="food-state">در انتظار غذا</span>
+            <span>هاله عصبی نمادین است، نه نقشه آناتومیک.</span>
+          </div>
+        </section>
+
+        <aside class="instruments" aria-label="اندازه‌گیری‌های زنده">
+          <section class="instrument instrument-emphasis">
+            <div class="instrument-heading">
+              <h2>گرسنگی</h2>
+              <output id="hunger-value" dir="ltr">0.000</output>
+            </div>
+            <meter id="hunger-meter" min="0" max="1" value="0">0</meter>
+          </section>
+
+          <section class="instrument">
+            <div class="instrument-heading">
+              <h2>حواس</h2>
+              <span class="instrument-code">L / R</span>
+            </div>
+            <div class="paired-reading">
+              <span>بویایی</span>
+              <output id="smell-value" dir="ltr">0.000 / 0.000</output>
+            </div>
+            <div class="paired-reading">
+              <span>بینایی</span>
+              <output id="vision-value" dir="ltr">0.000 / 0.000</output>
+            </div>
+          </section>
+
+          <section class="instrument">
+            <div class="instrument-heading">
+              <h2>خروجی حرکتی</h2>
+              <span class="instrument-code">MOTOR</span>
+            </div>
+            <div class="paired-reading motor-forward">
+              <span>حرکت رو به جلو</span>
+              <output id="forward-value" dir="ltr">0.000</output>
+            </div>
+            <div class="paired-reading motor-turn">
+              <span>چرخش</span>
+              <output id="turn-value" dir="ltr">+0.000</output>
+            </div>
+          </section>
+
+          <section class="instrument learning-instrument">
+            <div class="instrument-heading">
+              <h2>یادگیری</h2>
+              <span id="memory-state" class="instrument-code">STABLE</span>
+            </div>
+            <div class="paired-reading">
+              <span>پاداش</span>
+              <output id="reward-value" dir="ltr">0.000</output>
+            </div>
+            <div class="paired-reading">
+              <span>قدرت تداعی</span>
+              <output id="association-value" dir="ltr">0.000</output>
+            </div>
+          </section>
+
+          <section class="instrument role-instrument">
+            <div class="instrument-heading">
+              <h2>نورون‌های نزولی</h2>
+              <span class="instrument-code">OFFICIAL IDs</span>
+            </div>
+            <dl id="role-list" class="role-list"></dl>
+          </section>
+        </aside>
+
+        <section class="activity-ribbon" aria-labelledby="activity-title">
+          <div class="activity-heading">
+            <div>
+              <h2 id="activity-title">فعال‌ترین نورون‌ها</h2>
+              <p class="section-code">MEASURED ACTIVITY</p>
+            </div>
+            <span id="active-count" class="activity-count" dir="ltr">0 ACTIVE</span>
+          </div>
+          <ol id="active-neurons" class="neuron-list">
+            <li class="empty-neurons">هنوز فعالیتی ثبت نشده است.</li>
+          </ol>
+        </section>
+      </main>
+    </div>
+    <div id="announcer" class="sr-only" aria-live="assertive"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

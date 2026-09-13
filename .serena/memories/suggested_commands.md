@@ -7,7 +7,11 @@
 - `make brain-status`: validate the generated full graph and its source identity.
 - `make brain-benchmark`: measure full-graph sparse update speed.
 - `make run-full`: run Experiment 1 with the full backend.
+- `make web`: build and serve the Persian Three.js observatory at http://127.0.0.1:8000.
+- `make web-full`: build and serve the observatory with all 166,606 valid bodies.
+- `make frontend-build`: install locked Bun packages, type-check, and build browser assets.
 - `make help`: concise command list.
 - Direct finite smoke: `.venv/bin/python -B main.py run --steps 600 --fps 30 --memory-file /tmp/flybrain-memory.json`.
 - Default memory path: data/runs/experiment-001-memory.json.
 - Generated graph path: data/processed/malecns/v1.0/full-graph/ (git-ignored).
+- Browser unit tests: `cd frontend/web && bun test`.

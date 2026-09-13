@@ -18,7 +18,8 @@ readout.
 | `brain` | MaleCNS data, graph building, compact/full neural dynamics, modulation, learning, memory state | `simulation.signals` |
 | `simulation` | Immutable boundary signals and tick orchestration | `brain`, `world` |
 | `experiments` | Concrete Experiment 1 composition and parameters | `brain`, `simulation`, `world` |
-| `frontend` | Read-only terminal rendering of telemetry | `simulation.signals` |
+| `frontend` | Terminal rendering, versioned browser telemetry, aiohttp host | `simulation.signals` |
+| `frontend/web` | Persian RTL Three.js observer and instruments | JSON telemetry only |
 | `main.py` | CLI, official asset loading, memory persistence lifecycle | all composition adapters |
 
 The dependency rule is explicit: **world must not import brain**, and brain must
@@ -86,6 +87,25 @@ produces zero smell and vision rather than a behavioral instruction.
 This order ensures that reward modifies the odor representation that preceded
 the rewarded contact.
 
+## Browser observation boundary
+
+```text
+Python simulation -> immutable frame -> JSON schema v1 -> WebSocket -> Three.js
+       ^                                                        |
+       +---------------- pause/resume clock only <---------------+
+```
+
+`main.py web` composes the same Experiment 1 simulation used by the terminal.
+`ObservatoryServer` serves built Vite assets and broadcasts finite, bounded JSON
+frames. It rejects cross-origin WebSockets, oversized messages, unknown fields,
+and every command except `set_running` with a Boolean value. The browser parses
+the schema again before rendering, so incompatible telemetry stops visibly.
+
+The browser never imports Python domain objects and cannot send motor, sensor,
+food, hunger, reward, memory, or neural values. Three.js renders procedural body
+geometry, world position, food, odor strength, trail, and a symbolic neural halo.
+The Persian instrument panel remains usable if WebGL creation fails.
+
 ## Runtime circuits
 
 `data/circuits/foraging-v1-runtime.json` contains the compact sensor-to-motor
@@ -149,6 +169,8 @@ moves existing state to `.bak` before starting clean.
   rejected instead of silently reset.
 - A failed save exits with an English ASCII error.
 - `Ctrl+C` restores the terminal and saves the current memory.
+- An incompatible browser telemetry schema stops rendering and reports the
+  mismatch instead of guessing field meanings.
 
 ## Extension points
 

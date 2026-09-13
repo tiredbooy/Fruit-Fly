@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "project": {
+    "name": "FlyBrain Lab",
+    "productType": "scientific simulation observatory",
+    "stack": ["TypeScript", "Three.js", "Vite", "Bun", "aiohttp"]
+  },
+  "sources": {
+    "tokens": ["frontend/web/src/styles.css"],
+    "components": ["frontend/web/index.html", "frontend/web/src"],
+    "assets": ["frontend/web/public/favicon.svg"],
+    "instructions": ["AGENTS.md", "PRODUCT.md", "DESIGN.md"]
+  },
+  "design": {
+    "colorMode": "dark",
+    "colors": {
+      "chamber": "#070b0f",
+      "panel": "#14202a",
+      "sensory": "#58d6d0",
+      "food": "#f2b84b",
+      "neural": "#e36da6",
+      "text": "#e8efef"
+    },
+    "typography": {
+      "interface": "local Persian system sans-serif",
+      "technical": "ui-monospace"
+    },
+    "spacing": { "base": "4px", "panelGap": "14px" },
+    "radius": { "control": "12px", "panel": "14px" },
+    "shadows": { "panel": "0 18px 48px 8px rgb(0 0 0 / 28%)" },
+    "motion": {
+      "quick": "140ms",
+      "standard": "300ms",
+      "reveal": "650ms",
+      "easing": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    "density": "compact"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": ["semantic HTML", "native button", "native meter"],
+    "patterns": ["living specimen chamber", "instrument rail", "activity ribbon"]
+  },
+  "constraints": {
+    "must": [
+      "Persian RTL browser copy",
+      "official biological identifiers remain exact",
+      "browser observes and may only pause or resume",
+      "WebGL failure preserves live instruments"
+    ],
+    "avoid": [
+      "invented anatomical claims",
+      "frontend behavior rules",
+      "remote fonts or analytics",
+      "decorative gradients"
+    ]
+  },
+  "decisions": [
+    {
+      "choice": "living specimen chamber",
+      "reason": "Makes continuous embodied neural state visible without presenting telemetry as thought."
+    }
+  ],
+  "evidence": [
+    { "fact": "project.instructions", "source": "AGENTS.md" },
+    { "fact": "product.truth", "source": "PRODUCT.md" },
+    { "fact": "visual.system", "source": "DESIGN.md" }
+  ],
+  "generatedAt": "2026-09-13T12:00:00+03:30"
+}

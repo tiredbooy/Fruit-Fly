@@ -62,6 +62,9 @@ class ObservatoryServer:
     async def index(self, request: web.Request) -> web.FileResponse:
         return web.FileResponse(self.config.dist_path / "index.html")
 
+    async def favicon(self, request: web.Request) -> web.FileResponse:
+        return web.FileResponse(self.config.dist_path / "favicon.svg")
+
     async def websocket(self, request: web.Request) -> web.WebSocketResponse:
         origin = request.headers.get("Origin")
         allowed_origins = {f"http://{request.host}", f"https://{request.host}"}
@@ -159,6 +162,9 @@ def create_app(
     app.router.add_get("/health", server.health)
     app.router.add_get("/ws", server.websocket)
     app.router.add_get("/", server.index)
+    favicon = config.dist_path / "favicon.svg"
+    if favicon.is_file():
+        app.router.add_get("/favicon.svg", server.favicon)
     assets = config.dist_path / "assets"
     if assets.is_dir():
         app.router.add_static("/assets/", assets, show_index=False)

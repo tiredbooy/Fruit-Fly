@@ -24,6 +24,7 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
         self.dist = Path(self.temporary.name)
         (self.dist / "assets").mkdir()
         (self.dist / "index.html").write_text("<main>observatory</main>")
+        (self.dist / "favicon.svg").write_text("<svg></svg>")
         self.simulation = self._simulation()
         app = create_app(
             simulation=self.simulation,
@@ -54,6 +55,12 @@ class ObservatoryServerTest(unittest.IsolatedAsyncioTestCase):
             },
             await response.json(),
         )
+
+    async def test_serves_the_built_favicon(self) -> None:
+        response = await self.client.get("/favicon.svg")
+
+        self.assertEqual(200, response.status)
+        self.assertEqual("image/svg+xml", response.content_type)
 
     async def test_websocket_sends_hello_and_live_frame(self) -> None:
         socket = await self.client.ws_connect("/ws")

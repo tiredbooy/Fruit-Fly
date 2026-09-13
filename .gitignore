@@ -2,3 +2,6 @@ __pycache__/
 *.py[cod]
 .venv/
 data/processed/
+frontend/web/node_modules/
+frontend/web/dist/
+.impeccable/

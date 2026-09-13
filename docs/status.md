@@ -6,10 +6,11 @@ Last updated: 2026-09-13
 
 Experiment 1 runs one fly with a dynamic food source in a bounded two-dimensional
 world. Food begins absent, respawns after random delays, expires, and may appear
-far away or outside accessible bounds. The live English terminal shows physical
-state, bilateral smell and vision, hunger, named descending-neuron activity,
-motor output, reward, and persistent association strength. The same experiment
-can run on the compact circuit or the full MaleCNS graph.
+far away or outside accessible bounds. The live English terminal and Persian
+Three.js observatory show physical state, bilateral smell and vision, hunger,
+named descending-neuron activity, motor output, reward, and persistent
+association strength. Both interfaces can run on the compact circuit or the
+full MaleCNS graph.
 
 The renderer uses a fly emoji for the body. Its status line reports `WAITING FOR
 FOOD` while absent and `FOOD OUT OF REACH` for an outside-arena spawn.
@@ -30,6 +31,10 @@ FOOD` while absent and `FOOD OUT OF REACH` for an outside-arena spawn.
   including 206 isolated bodies, and 25,574,615 valid neuron-to-neuron edges.
 - `make brain-build`, `make brain-status`, `make brain-benchmark`, and
   `make run-full` manage the optional full backend. Compact remains the default.
+- `make web` serves a responsive Three.js specimen chamber with live versioned
+  telemetry; `make web-full` selects all 166,606 valid MaleCNS bodies.
+- The browser can pause/resume the authoritative Python clock but cannot steer,
+  feed, or inject neural activity.
 
 ## Verified situation
 
@@ -64,10 +69,17 @@ A five-step `run --brain full` smoke test completed successfully. Benchmark
 results are machine-specific and should be remeasured after dependency, graph,
 or dynamics changes.
 
+Browser verification on 2026-09-13 covered 1440x1000 and 390x844 viewports:
+live frames advanced, pause/resume froze and restarted the same Python clock,
+WebGL rendered one canvas, mobile horizontal overflow was zero, and the browser
+console contained no errors. Full-mode startup reported `backend: full` and
+`dataset: male-cns:v1.0` through `/health`.
+
 Final verification commands:
 
 ```bash
 make test
+make frontend-build
 make data-status
 make brain-status
 make brain-benchmark
@@ -94,11 +106,11 @@ make help
 - Learned memory changes odor salience through an explicit model adapter, not a
   fully reconstructed MBON-to-descending circuit.
 - The simulator has no evidence of consciousness or subjective experience.
+- The fly body and neural halo are procedural visual symbols, not anatomical
+  reconstructions.
 
 ## Next milestone
 
-The approved order is: use the full brain engine as infrastructure, build a fly
-gym with measurable tasks, add general learning across those tasks, add Three.js
-observation, and only then evaluate poker as a high-level research experiment.
-The next implementation milestone is the gym task protocol and benchmark suite;
-Three.js and poker are not implemented yet.
+The next implementation milestone is the fly-gym task protocol and benchmark
+suite, followed by general learning across those tasks. Poker remains a later
+research evaluation; it is not implemented.

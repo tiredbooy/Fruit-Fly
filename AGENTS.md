@@ -91,6 +91,21 @@ world -> immutable sensory signals -> brain -> immutable motor signals -> world
 - Restore cursor visibility and terminal state after completion or `Ctrl+C`.
 - Show measured simulation state; never fabricate narrative thoughts.
 
+## Browser observatory
+
+- Browser UI text is Persian and right-to-left; official labels, IDs, dataset
+  names, and technical mode names stay unchanged.
+- Python owns the simulation clock, state, and persistence. The browser receives
+  versioned JSON telemetry through the same-origin `/ws` endpoint.
+- Browser commands are limited to pause/resume. Never add steering, feeding,
+  neural injection, or world mutation to the frontend.
+- Three.js geometry is a visualization. The neural halo is symbolic and must
+  never be presented as anatomical reconstruction.
+- Keep the information panel functional when WebGL is unavailable. Preserve
+  keyboard focus, live connection status, reduced motion, and narrow layouts.
+- Run `make frontend-build` plus a real-browser desktop/mobile check after UI
+  changes.
+
 ## Documentation maintenance
 
 Every material change must update the matching documentation in the same task:

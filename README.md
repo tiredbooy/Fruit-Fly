@@ -13,6 +13,7 @@ experience.
 
 - Python 3.14 virtual environment at `.venv/`
 - Python packages from `requirements.txt`: NumPy, pandas, PyArrow, and SciPy
+- Bun 1.4 or newer for the browser build
 - GNU Make for the short commands below
 - Official MaleCNS files in `data/raw/malecns/v1.0/`
 
@@ -22,6 +23,17 @@ experience.
 make data-status
 make run
 ```
+
+Open the live Three.js observatory:
+
+```bash
+make web
+```
+
+Then visit <http://127.0.0.1:8000>. The browser shows the fly, food, odor
+response, symbolic neural activity, hunger, official descending-neuron labels,
+motor output, reward, and learned association. Its only command is pause/resume;
+Python remains the sole simulation authority.
 
 Build and run all 166,606 valid MaleCNS v1.0 neurons:
 
@@ -53,6 +65,9 @@ spawn sequence:
 make run          Run Experiment 1 with persistent learned memory
 make run-fresh    Archive existing memory and start with clean memory
 make run-full     Run Experiment 1 with the full MaleCNS backend
+make web          Build and run the Three.js observatory with compact brain
+make web-full     Build and run the observatory with the full brain
+make frontend-build  Test types and build browser assets
 make test         Run the complete test suite
 make data-status  Verify official data, annotations, roles, and edge weights
 make brain-build  Build the full memory-mapped sparse graph
