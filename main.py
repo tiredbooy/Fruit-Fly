@@ -16,6 +16,9 @@ from brain.data import (
     SourceManifest,
     load_release,
 )
+from brain.full_graph import FullGraphRepository
+from brain.full_graph_builder import FullGraphBuilder
+from brain.full_network import FullConnectomeNetwork
 from brain.network import RuntimeCircuit
 from brain.learning import LearningCircuit, LearningConfig, MushroomBodyLearning
 from brain.memory import MemoryRepository, MemoryState, MemoryValidationError
@@ -30,18 +33,37 @@ RUNTIME_CIRCUIT = PROJECT_ROOT / "data/circuits/foraging-v1-runtime.json"
 LEARNING_CIRCUIT = PROJECT_ROOT / "data/circuits/foraging-v1-learning.json"
 RAW_DIRECTORY = PROJECT_ROOT / "data/raw/malecns/v1.0"
 DEFAULT_MEMORY = PROJECT_ROOT / "data/runs/experiment-001-memory.json"
+FULL_GRAPH_DIRECTORY = PROJECT_ROOT / "data/processed/malecns/v1.0/full-graph"
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Fruit Fly Brain Simulation Lab")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("data-status", help="Validate the official MaleCNS data")
+    commands.add_parser("brain-build", help="Build the full MaleCNS graph artifact")
+    commands.add_parser("brain-status", help="Validate the full MaleCNS graph artifact")
+    benchmark = commands.add_parser(
+        "brain-benchmark",
+        help="Benchmark full MaleCNS sparse-network updates",
+    )
+    benchmark.add_argument(
+        "--substeps",
+        type=int,
+        default=10,
+        help="Number of neural substeps to measure",
+    )
     run = commands.add_parser("run", help="Run Experiment 1")
     run.add_argument("--animate", action="store_true", help="Show live terminal animation")
     run.add_argument("--steps", type=int, default=0, help="Number of steps; zero runs until stopped")
     run.add_argument("--fps", type=float, default=10.0, help="Frames per second")
     run.add_argument("--no-ansi", action="store_true", help="Print plain frames without terminal controls")
     run.add_argument("--seed", type=int, default=None, help="Random seed for repeatable food spawning")
+    run.add_argument(
+        "--brain",
+        choices=("compact", "full"),
+        default="compact",
+        help="Neural backend; full requires 'make brain-build'",
+    )
     run.add_argument(
         "--memory-file",
         type=Path,
@@ -105,6 +127,76 @@ def data_status() -> int:
     print(f"Validated learning edges: {len(learning.orn_pn_edges + learning.pn_kc_edges + learning.plastic_edges):,}")
     print(f"Official PAM01 reward neurons: {len(learning.pam01_neurons):,}")
     print("Status: data is valid and ready")
+    return 0
+
+
+def brain_build() -> int:
+    try:
+        source = SourceManifest.from_json(SOURCE_MANIFEST)
+        started = time.perf_counter()
+        metadata = FullGraphBuilder(source, RAW_DIRECTORY).build(FULL_GRAPH_DIRECTORY)
+    except (DataIntegrityError, ValueError, KeyError, OSError) as error:
+        print(f"Brain build error: {error}")
+        return 1
+
+    elapsed = time.perf_counter() - started
+    print(f"Full MaleCNS graph built in {elapsed:.2f} seconds")
+    print(f"Neurons: {metadata.neuron_count:,}")
+    print(f"Connected neurons: {metadata.connected_neuron_count:,}")
+    print(f"Edges: {metadata.edge_count:,}")
+    print(f"Artifact: {FULL_GRAPH_DIRECTORY}")
+    return 0
+
+
+def load_full_graph():
+    source = SourceManifest.from_json(SOURCE_MANIFEST)
+    return FullGraphRepository(FULL_GRAPH_DIRECTORY).load(source)
+
+
+def brain_status() -> int:
+    try:
+        graph = load_full_graph()
+        artifact_bytes = sum(
+            path.stat().st_size for path in FULL_GRAPH_DIRECTORY.glob("*") if path.is_file()
+        )
+    except (DataIntegrityError, ValueError, KeyError, OSError) as error:
+        print(f"Brain status error: {error}")
+        return 1
+
+    metadata = graph.metadata
+    print(f"Dataset: {metadata.dataset}")
+    print(f"Neurons: {metadata.neuron_count:,}")
+    print(f"Connected neurons: {metadata.connected_neuron_count:,}")
+    print(f"Edges: {metadata.edge_count:,}")
+    print(f"Artifact size: {artifact_bytes / (1024 ** 2):.1f} MiB")
+    print(f"Filter: {metadata.filter_name}")
+    print(f"Polarity: {metadata.polarity_policy}")
+    print(f"Dynamics: {metadata.dynamics}")
+    print("Status: full brain artifact is valid and ready")
+    return 0
+
+
+def brain_benchmark(substeps: int) -> int:
+    if substeps <= 0:
+        print("Error: substeps must be greater than zero")
+        return 2
+    try:
+        graph = load_full_graph()
+        circuit = load_runtime_circuit()
+        network = FullConnectomeNetwork(graph, circuit)
+        network.step({}, substeps=1)
+        started = time.perf_counter()
+        network.step({}, substeps=substeps)
+    except (DataIntegrityError, ValueError, KeyError, OSError) as error:
+        print(f"Brain benchmark error: {error}")
+        return 1
+
+    elapsed = time.perf_counter() - started
+    print(f"Neurons: {graph.metadata.neuron_count:,}")
+    print(f"Edges: {graph.metadata.edge_count:,}")
+    print(f"Substeps: {substeps:,}")
+    print(f"Elapsed: {elapsed:.4f} seconds")
+    print(f"Per substep: {elapsed * 1000.0 / substeps:.3f} ms")
     return 0
 
 
@@ -184,6 +276,7 @@ def run_experiment(
     memory_path: Path = DEFAULT_MEMORY,
     reset_memory: bool = False,
     seed: int | None = None,
+    brain: str = "compact",
 ) -> int:
     if fps <= 0.0:
         print("Error: frame rate must be greater than zero")
@@ -202,7 +295,16 @@ def run_experiment(
 
     if backup is not None:
         print(f"Previous memory archived: {backup}")
-    simulation = create_simulation(circuit, learner, seed=seed)
+    try:
+        network = (
+            FullConnectomeNetwork(load_full_graph(), circuit)
+            if brain == "full"
+            else None
+        )
+    except (DataIntegrityError, ValueError, KeyError, OSError) as error:
+        print(f"Data error: {error}")
+        return 1
+    simulation = create_simulation(circuit, learner, seed=seed, network=network)
     dt = 1.0 / fps
     limit = steps if steps > 0 else (None if animate else 300)
     terminal_size = shutil.get_terminal_size((100, 32))
@@ -262,6 +364,12 @@ def main(arguments: list[str] | None = None) -> int:
     parsed = build_parser().parse_args(arguments)
     if parsed.command == "data-status":
         return data_status()
+    if parsed.command == "brain-build":
+        return brain_build()
+    if parsed.command == "brain-status":
+        return brain_status()
+    if parsed.command == "brain-benchmark":
+        return brain_benchmark(parsed.substeps)
     if parsed.command == "run":
         return run_experiment(
             animate=parsed.animate,
@@ -271,6 +379,7 @@ def main(arguments: list[str] | None = None) -> int:
             memory_path=parsed.memory_file,
             reset_memory=parsed.reset_memory,
             seed=parsed.seed,
+            brain=parsed.brain,
         )
     return 1
 

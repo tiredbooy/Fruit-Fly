@@ -23,6 +23,8 @@ class MainCliTest(unittest.TestCase):
                 "--reset-memory",
                 "--seed",
                 "1234",
+                "--brain",
+                "full",
             ]
         )
 
@@ -33,6 +35,19 @@ class MainCliTest(unittest.TestCase):
         self.assertEqual("/tmp/test-memory.json", str(arguments.memory_file))
         self.assertTrue(arguments.reset_memory)
         self.assertEqual(1234, arguments.seed)
+        self.assertEqual("full", arguments.brain)
+
+    def test_full_brain_management_commands_are_available(self) -> None:
+        build = build_parser().parse_args(["brain-build"])
+        status = build_parser().parse_args(["brain-status"])
+        benchmark = build_parser().parse_args(
+            ["brain-benchmark", "--substeps", "12"]
+        )
+
+        self.assertEqual("brain-build", build.command)
+        self.assertEqual("brain-status", status.command)
+        self.assertEqual("brain-benchmark", benchmark.command)
+        self.assertEqual(12, benchmark.substeps)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 
 from brain.learning import MushroomBodyLearning
-from brain.network import ConnectomeNetwork, RuntimeCircuit
+from brain.network import ConnectomeNetwork, NeuralNetwork, RuntimeCircuit
 from brain.readout import MotorReadout
 from brain.sensory import BrainAdapter
 from simulation.loop import Simulation
@@ -20,6 +20,7 @@ def create_simulation(
     learning: MushroomBodyLearning | None = None,
     *,
     seed: int | None = None,
+    network: NeuralNetwork | None = None,
 ) -> Simulation:
     environment = Environment(
         width=20.0,
@@ -35,6 +36,6 @@ def create_simulation(
         body=FlyBody(x=-5.5, y=-2.2, heading=0.22),
         physiology=Physiology(hunger=0.42),
         sensors=SensorRig(),
-        brain=BrainAdapter(ConnectomeNetwork(circuit), learning),
+        brain=BrainAdapter(network or ConnectomeNetwork(circuit), learning),
         readout=MotorReadout(),
     )
