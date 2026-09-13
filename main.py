@@ -8,6 +8,8 @@ import shutil
 import sys
 import time
 
+from aiohttp import web
+
 from brain.circuit import CircuitManifest
 from brain.data import (
     DataIntegrityError,
@@ -24,6 +26,8 @@ from brain.learning import LearningCircuit, LearningConfig, MushroomBodyLearning
 from brain.memory import MemoryRepository, MemoryState, MemoryValidationError
 from experiments.experiment_001 import create_simulation
 from frontend.console import ConsoleRenderer, draw_frame, terminal_animation
+from frontend.server import ObservatoryConfig, create_app
+from simulation.loop import Simulation
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -34,6 +38,7 @@ LEARNING_CIRCUIT = PROJECT_ROOT / "data/circuits/foraging-v1-learning.json"
 RAW_DIRECTORY = PROJECT_ROOT / "data/raw/malecns/v1.0"
 DEFAULT_MEMORY = PROJECT_ROOT / "data/runs/experiment-001-memory.json"
 FULL_GRAPH_DIRECTORY = PROJECT_ROOT / "data/processed/malecns/v1.0/full-graph"
+FRONTEND_DIST = PROJECT_ROOT / "frontend/web/dist"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -71,6 +76,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to persistent learned memory",
     )
     run.add_argument(
+        "--reset-memory",
+        action="store_true",
+        help="Archive existing memory and start clean",
+    )
+    browser = commands.add_parser("web", help="Serve the Three.js observatory")
+    browser.add_argument(
+        "--brain",
+        choices=("compact", "full"),
+        default="compact",
+        help="Neural backend; full requires 'make brain-build'",
+    )
+    browser.add_argument("--host", default="127.0.0.1", help="HTTP bind address")
+    browser.add_argument("--port", type=int, default=8000, help="HTTP port")
+    browser.add_argument("--fps", type=float, default=10.0, help="Simulation frames per second")
+    browser.add_argument("--seed", type=int, default=None, help="Random food-spawn seed")
+    browser.add_argument(
+        "--memory-file",
+        type=Path,
+        default=DEFAULT_MEMORY,
+        help="Path to persistent learned memory",
+    )
+    browser.add_argument(
         "--reset-memory",
         action="store_true",
         help="Archive existing memory and start clean",
@@ -275,6 +302,26 @@ def load_experiment_brain(
     return runtime, learner, repository, backup
 
 
+def compose_experiment(
+    *,
+    memory_path: Path,
+    reset_memory: bool,
+    seed: int | None,
+    brain: str,
+) -> tuple[Simulation, MemoryRepository, Path | None]:
+    circuit, learner, repository, backup = load_experiment_brain(
+        memory_path,
+        reset_memory=reset_memory,
+    )
+    network = (
+        FullConnectomeNetwork(load_full_graph(), circuit)
+        if brain == "full"
+        else None
+    )
+    simulation = create_simulation(circuit, learner, seed=seed, network=network)
+    return simulation, repository, backup
+
+
 def run_experiment(
     *,
     animate: bool,
@@ -293,9 +340,11 @@ def run_experiment(
         print("Error: step count cannot be negative")
         return 2
     try:
-        circuit, learner, repository, backup = load_experiment_brain(
-            memory_path,
+        simulation, repository, backup = compose_experiment(
+            memory_path=memory_path,
             reset_memory=reset_memory,
+            seed=seed,
+            brain=brain,
         )
     except (DataIntegrityError, MemoryValidationError, ValueError, KeyError, OSError) as error:
         print(f"Data error: {error}")
@@ -303,16 +352,6 @@ def run_experiment(
 
     if backup is not None:
         print(f"Previous memory archived: {backup}")
-    try:
-        network = (
-            FullConnectomeNetwork(load_full_graph(), circuit)
-            if brain == "full"
-            else None
-        )
-    except (DataIntegrityError, ValueError, KeyError, OSError) as error:
-        print(f"Data error: {error}")
-        return 1
-    simulation = create_simulation(circuit, learner, seed=seed, network=network)
     dt = 1.0 / fps
     limit = steps if steps > 0 else (None if animate else 300)
     terminal_size = shutil.get_terminal_size((100, 32))
@@ -368,6 +407,56 @@ def run_experiment(
     return 0
 
 
+def run_web(
+    *,
+    brain: str,
+    host: str,
+    port: int,
+    fps: float,
+    memory_path: Path,
+    reset_memory: bool,
+    seed: int | None,
+) -> int:
+    if fps <= 0.0:
+        print("Error: frame rate must be greater than zero")
+        return 2
+    if not 1 <= port <= 65_535:
+        print("Error: port must be within 1..65535")
+        return 2
+    try:
+        simulation, repository, backup = compose_experiment(
+            memory_path=memory_path,
+            reset_memory=reset_memory,
+            seed=seed,
+            brain=brain,
+        )
+
+        def persist_memory() -> None:
+            if simulation.brain.memory is not None:
+                repository.save(simulation.brain.memory)
+
+        source = SourceManifest.from_json(SOURCE_MANIFEST)
+        app = create_app(
+            simulation=simulation,
+            config=ObservatoryConfig(
+                backend=brain,
+                dataset=source.dataset,
+                fps=fps,
+                dist_path=FRONTEND_DIST,
+            ),
+            persist_memory=persist_memory,
+        )
+    except (DataIntegrityError, MemoryValidationError, ValueError, KeyError, OSError) as error:
+        print(f"Web startup error: {error}")
+        return 1
+
+    if backup is not None:
+        print(f"Previous memory archived: {backup}")
+    print(f"Fly observatory: http://{host}:{port}")
+    web.run_app(app, host=host, port=port, print=None)
+    return 0
+
+
 def main(arguments: list[str] | None = None) -> int:
     parsed = build_parser().parse_args(arguments)
     if parsed.command == "data-status":
@@ -378,6 +467,16 @@ def main(arguments: list[str] | None = None) -> int:
         return brain_status()
     if parsed.command == "brain-benchmark":
         return brain_benchmark(parsed.substeps)
+    if parsed.command == "web":
+        return run_web(
+            brain=parsed.brain,
+            host=parsed.host,
+            port=parsed.port,
+            fps=parsed.fps,
+            memory_path=parsed.memory_file,
+            reset_memory=parsed.reset_memory,
+            seed=parsed.seed,
+        )
     if parsed.command == "run":
         return run_experiment(
             animate=parsed.animate,

@@ -49,6 +49,34 @@ class MainCliTest(unittest.TestCase):
         self.assertEqual("brain-benchmark", benchmark.command)
         self.assertEqual(12, benchmark.substeps)
 
+    def test_web_command_selects_backend_and_network_address(self) -> None:
+        arguments = build_parser().parse_args(
+            [
+                "web",
+                "--brain",
+                "full",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8123",
+                "--fps",
+                "12",
+                "--seed",
+                "7",
+                "--memory-file",
+                "/tmp/web-memory.json",
+                "--reset-memory",
+            ]
+        )
+
+        self.assertEqual("web", arguments.command)
+        self.assertEqual("full", arguments.brain)
+        self.assertEqual("0.0.0.0", arguments.host)
+        self.assertEqual(8123, arguments.port)
+        self.assertEqual(12.0, arguments.fps)
+        self.assertEqual(7, arguments.seed)
+        self.assertTrue(arguments.reset_memory)
+
 
 if __name__ == "__main__":
     unittest.main()
